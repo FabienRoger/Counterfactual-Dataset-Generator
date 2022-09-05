@@ -4,7 +4,14 @@ from pathlib import Path
 from typing import Any, Iterable, Literal, Mapping, NamedTuple, Optional, Sequence, Union
 from collections import OrderedDict
 from counterfactual_dataset_generator.converter_loading import SimpleConverter
-from counterfactual_dataset_generator.types import AugmentedInput, Category, Converter, Input, Output, Variation
+from counterfactual_dataset_generator.types import (
+    AugmentedSample,
+    Category,
+    Converter,
+    Input,
+    Output,
+    Variation,
+)
 from attrs import define
 
 default_dataset_paths: Mapping[str, str] = {
@@ -26,9 +33,14 @@ class Sample:
     input: Input
     expected_output: Optional[Output] = None
 
+    @classmethod
+    def from_json_dict(cls, json_dict):
+        expected_output = json_dict["expected_output"] if "expected_output" in json_dict else None
+        return Sample(json_dict["input"], expected_output)
+
 
 @define
-class SampleWithVariations(Sample, AugmentedInput):
+class SampleWithVariations(Sample, AugmentedSample):
     variations: list[Variation] = []
 
     def get_variations(self) -> Sequence[Variation]:
@@ -37,6 +49,12 @@ class SampleWithVariations(Sample, AugmentedInput):
     @classmethod
     def from_sample(cls, s: Sample, variations: list[Variation] = []):
         return SampleWithVariations(s.input, s.expected_output, variations)
+
+    @classmethod
+    def from_json_dict(cls, json_dict):
+        expected_output = json_dict["expected_output"] if "expected_output" in json_dict else None
+        variations = [Variation(v["text"], tuple(v["categories"])) for v in json_dict["variations"]]
+        return SampleWithVariations(json_dict["input"], expected_output, variations)
 
     def to_json_dict(self) -> OrderedDict:
         d: OrderedDict[str, Any] = OrderedDict({"input": self.input})
@@ -60,8 +78,7 @@ class Dataset:
             data = [json.loads(line) for line in f]
             samples = []
             for d in data:
-                expected_output = d["expected_output"] if "expected_output" in d else None
-                samples.append(Sample(d["input"], expected_output))
+                samples.append(Sample.from_json_dict(d))
         return Dataset(samples)
 
 
@@ -74,6 +91,15 @@ class AugmentedDataset:
             for sample in self.samples:
                 json.dump(sample.to_json_dict(), f)
                 f.write("\n")
+
+    @classmethod
+    def from_jsonl(cls, path: str):
+        with Path(path).open("r") as f:
+            data = [json.loads(line) for line in f]
+            samples = []
+            for d in data:
+                samples.append(SampleWithVariations.from_json_dict(d))
+        return AugmentedDataset(samples)
 
 
 def generate_variations_pair(converter: Converter, ds: Dataset) -> AugmentedDataset:
