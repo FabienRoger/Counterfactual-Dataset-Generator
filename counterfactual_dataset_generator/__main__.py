@@ -10,7 +10,9 @@ from counterfactual_dataset_generator.data_augmentation import augment_dataset
 @click.option("--converters-names", default=["gender"], help="Name of the converters to use.", multiple=True)
 @click.option("--converters-paths", default=[], help="Paths to the json files describing converters.", multiple=True)
 def cli(load_path, save_path, converters_names, converters_paths):
-    """Simple program that greets NAME for a total of COUNT times."""
+    """Simple program that greets NAME for a total of COUNT times.
+
+    Example use: python -m counterfactual_dataset_generator --load-path counterfactual_dataset_generator\data\examples\doublebind.jsonl --save-path tests_saves/test3.jsonl"""
     converters = [SimpleConverter.from_default(name) for name in converters_names] + [
         SimpleConverter.from_json(path) for path in converters_paths
     ]

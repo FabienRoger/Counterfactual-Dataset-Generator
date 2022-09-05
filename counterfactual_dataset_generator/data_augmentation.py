@@ -1,10 +1,10 @@
 from ast import Or
 import json
 from pathlib import Path
-from typing import Any, Iterable, Literal, Mapping, Optional, Sequence, Union
+from typing import Any, Iterable, Literal, Mapping, NamedTuple, Optional, Sequence, Union
 from collections import OrderedDict
 from counterfactual_dataset_generator.converter_loading import SimpleConverter
-from counterfactual_dataset_generator.types import Converter, Input, Output
+from counterfactual_dataset_generator.types import AugmentedInput, Category, Converter, Input, Output, Variation
 from attrs import define
 
 default_dataset_paths: Mapping[str, str] = {
@@ -28,18 +28,21 @@ class Sample:
 
 
 @define
-class SampleWithVariations(Sample):
-    variations: list[Input] = []
+class SampleWithVariations(Sample, AugmentedInput):
+    variations: list[Variation] = []
+
+    def get_variations(self) -> Sequence[Variation]:
+        return self.variations
 
     @classmethod
-    def from_sample(cls, s: Sample, variations: list[Input] = []):
+    def from_sample(cls, s: Sample, variations: list[Variation] = []):
         return SampleWithVariations(s.input, s.expected_output, variations)
 
     def to_json_dict(self) -> OrderedDict:
         d: OrderedDict[str, Any] = OrderedDict({"input": self.input})
         if self.expected_output is not None:
             d["expected_output"] = self.expected_output
-        d["variations"] = self.variations
+        d["variations"] = [{"text": text, "categories": list(categories)} for text, categories in self.variations]
         return d
 
 
@@ -76,7 +79,9 @@ class AugmentedDataset:
 def generate_variations_pair(converter: Converter, ds: Dataset) -> AugmentedDataset:
     augmented_samples = []
     for sample in ds.samples:
-        variations = [converter.convert_to(sample.input, category) for category in converter.categories]
+        variations = [
+            Variation(converter.convert_to(sample.input, category), (category,)) for category in converter.categories
+        ]
         augmented_samples.append(SampleWithVariations.from_sample(sample, variations))
     return AugmentedDataset(augmented_samples)
 
@@ -84,11 +89,14 @@ def generate_variations_pair(converter: Converter, ds: Dataset) -> AugmentedData
 def generate_all_variations(converters: Iterable[Converter], ds: Dataset) -> AugmentedDataset:
     augmented_samples = []
     for sample in ds.samples:
-        variations = [sample.input]
+        variations = [Variation(sample.input, ())]
         for converter in converters:
             new_variations = []
             for category in converter.categories:
-                new_variations += [converter.convert_to(v, category) for v in variations]
-            variations = list(set(new_variations))
+                new_variations += [
+                    Variation(converter.convert_to(v, category), old_categories + (category,))
+                    for v, old_categories in variations
+                ]
+            variations = list(set(new_variations))  # TODO: better things to remove duplicates
         augmented_samples.append(SampleWithVariations.from_sample(sample, variations))
     return AugmentedDataset(augmented_samples)
