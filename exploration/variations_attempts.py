@@ -24,7 +24,7 @@ with open("../counterfactual_dataset_generator/data/converters/gender.json") as 
         return [cat for cat in categories if cat != c][0]
 
     for correspondance in corres_data["correspondances"]:
-        correspondance_t = {c: {t.__code__: map(t, l) for t in transformations} for c, l in correspondance.items()}
+        correspondance_t = {c: {t.__code__: list(map(t, l)) for t in transformations} for c, l in correspondance.items()}
 
         for c, l in correspondance.items():
             for word in l:
@@ -33,25 +33,37 @@ with open("../counterfactual_dataset_generator/data/converters/gender.json") as 
 
 # %%
 import spacy
+from random import choice
 
 nlp = spacy.load("en_core_web_sm")
 
 
 def detect(doc, category):
-    return any(t.text in correspondance_dict[category] for t in doc)
+    return any(len(correspondance_dict[category][t.text]) > 0 for t in doc)
+
 
 def transform(doc, from_category):
     """Swap the cateogry"""
-    r = doc.text
+    r = ""
+    position_in_text = 0
     for t in doc:
-        if t.text in correspondance_dict[from_category]:
-            
+        if correspondance_dict[from_category][t.text]:
+            r += doc.text[position_in_text : t.idx] + choice(correspondance_dict[from_category][t.text])
+            position_in_text = t.idx + len(t)
+    return r + doc.text[position_in_text:]
+
 
 for d in data:
     inp = d["input"]
     print(inp)
     doc = nlp(inp)
-    print(" ".join(f"{t.text}-{t.idx}-{t.text in correspondance_dict['male']}-{t.text in correspondance_dict['female']}" for t in doc))
-    print(detect(doc, "female"), detect(doc, "male"))
+    # print(
+    #     " ".join(
+    #         f"{t.text}-{t.idx}-{t.text in correspondance_dict['male']}-{t.text in correspondance_dict['female']}"
+    #         for t in doc
+    #     )
+    # )
+    # print(detect(doc, "female"), detect(doc, "male"))
+    print(transform(doc, "female"), transform(doc, "male"))
 
 # %%
