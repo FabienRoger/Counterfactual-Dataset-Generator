@@ -46,6 +46,9 @@ class SampleWithVariations(Sample, AugmentedSample):
     def get_variations(self) -> Sequence[Variation]:
         return self.variations
 
+    def get_expected_output(self) -> Optional[Output]:
+        return self.expected_output
+
     @classmethod
     def from_sample(cls, s: Sample, variations: list[Variation] = []):
         return SampleWithVariations(s.input, s.expected_output, variations)

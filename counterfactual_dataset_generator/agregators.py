@@ -1,5 +1,4 @@
 from collections import defaultdict
-from math import exp, log2
 from statistics import geometric_mean
 from typing import Iterable, Mapping, Optional, TextIO, TypeVar
 from attrs import define
@@ -17,16 +16,16 @@ from counterfactual_dataset_generator.utils import mean
 
 @define
 class AveragePerformancePerCategory(StatsAgregator):
-    geometric_mean: bool = False
+    use_geometric_mean: bool = False
 
     def __call__(self, performances: Results) -> Mapping[Category, float]:
-        performances_per_category: defaultdict[Category, float] = defaultdict(lambda: [])
+        performances_per_category: defaultdict[Category, list[float]] = defaultdict(lambda: [])
         for sample_perfs in performances:
             for perf, categories in sample_perfs:
                 for c in categories:
                     performances_per_category[c].append(perf)
 
-        mean_ = (lambda l: 2 ** (mean(map(log2, l)))) if self.geometric_mean else mean
+        mean_ = geometric_mean if self.use_geometric_mean else mean
         avg_performances_per_category = {c: mean_(perfs) for c, perfs in performances_per_category.items()}
         return avg_performances_per_category
 

@@ -1,3 +1,4 @@
+from math import log2
 from typing import Any, Sequence, TypeVar
 
 T = TypeVar("T")
@@ -15,3 +16,7 @@ def other(t: tuple[T, T], x: T) -> T:
 
 def mean(l: Sequence[float]) -> float:
     return sum(l) / len(l)
+
+
+def geometric_mean(l: Sequence[float]) -> float:
+    return 2 ** (mean(list(map(log2, l))))

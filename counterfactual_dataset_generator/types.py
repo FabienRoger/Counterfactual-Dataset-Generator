@@ -18,7 +18,7 @@ class AugmentedSample(metaclass=abc.ABCMeta):
         ...
 
     @abc.abstractproperty
-    def expected_output(self) -> Input:
+    def expected_output(self) -> Optional[Output]:
         ...
 
     @abc.abstractmethod
@@ -38,9 +38,8 @@ class Converter(metaclass=abc.ABCMeta):
 
 Performance = float  # between zero & one (one is better)
 ModelEvaluator = Callable[[Input, Optional[Output]], Performance]
-SampleResults: Iterable[tuple[Performance, tuple[Category, ...]]]
-Results: Iterable[SampleResults]
-
+SampleResults = Iterable[tuple[Performance, tuple[Category, ...]]]
+Results = Iterable[SampleResults]
 T = TypeVar("T")
 
 
