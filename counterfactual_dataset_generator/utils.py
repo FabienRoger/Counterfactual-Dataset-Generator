@@ -1,5 +1,6 @@
-from math import log2
-from typing import Any, Sequence, TypeVar
+from math import exp, log2
+import torch
+from typing import Any, Callable, Sequence, TypeVar
 
 T = TypeVar("T")
 
@@ -20,3 +21,17 @@ def mean(l: Sequence[float]) -> float:
 
 def geometric_mean(l: Sequence[float]) -> float:
     return 2 ** (mean(list(map(log2, l))))
+
+
+def perplexity(log_probs: Sequence[float]):
+    """Take in natural log probs, returns (average) perplexity"""
+    return exp(mean(log_probs))
+
+def concat_dicts(dicts: Sequence[dict[Any, torch.Tensor]]) -> dict[Any, torch.Tensor]:
+    if not dicts:
+        raise ValueError("dicts is empty")
+    keys = dicts[0].keys()
+    for d in dicts:
+        if d.keys() != keys:
+            raise ValueError("dicts must have the same keys")
+    return {k: torch.cat([d[k] for d in dicts], dim=-1) for k in keys}
