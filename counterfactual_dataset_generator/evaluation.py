@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Iterable, Mapping, TypeVar
 from attrs import define
 from counterfactual_dataset_generator.agregators import AveragePerformancePerCategory
+from counterfactual_dataset_generator.data_augmentation import AugmentedDataset
+from counterfactual_dataset_generator.generative_models import get_huggingface_gpt_model_evaluator
 
 from counterfactual_dataset_generator.types import (
     AugmentedSample,

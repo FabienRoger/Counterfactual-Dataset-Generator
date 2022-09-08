@@ -8,7 +8,6 @@ from counterfactual_dataset_generator.types import Input, ModelEvaluator, Output
 from counterfactual_dataset_generator.utils import concat_dicts, perplexity
 
 
-@lru_cache(maxsize=None)
 def get_huggingface_gpt_model_evaluator(model_name: str = "distilgpt2", device: str = "cpu") -> ModelEvaluator:
     model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
@@ -23,7 +22,7 @@ def get_huggingface_gpt_model_evaluator(model_name: str = "distilgpt2", device: 
         with torch.no_grad():
             logits = model(**tokens_inp_out).logits[0].to("cpu")
         log_probs = torch.log_softmax(logits, dim=-1)
-        correct_log_probs = log_probs[:, tokens_out["input_ids"]]
-        return perplexity(correct_log_probs)
+        correct_log_probs = log_probs[:, tokens_out["input_ids"][0]][:, 0]
+        return perplexity(list(correct_log_probs))
 
     return run

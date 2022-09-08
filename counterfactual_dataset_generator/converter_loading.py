@@ -47,7 +47,6 @@ class SimpleConverter(Converter):
     correspondance_dict: CorrespondanceDict
 
     @classmethod
-    @lru_cache(maxsize=None)
     def from_default(cls, name: str = "gender"):
         return SimpleConverter.from_json(default_converter_paths[name])
 

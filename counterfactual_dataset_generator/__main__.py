@@ -1,7 +1,9 @@
 import click
 from counterfactual_dataset_generator.converter_loading import SimpleConverter
 
-from counterfactual_dataset_generator.data_augmentation import augment_dataset
+from counterfactual_dataset_generator.data_augmentation import AugmentedDataset, augment_dataset
+from counterfactual_dataset_generator.evaluation import evaluate_and_print
+from counterfactual_dataset_generator.generative_models import get_huggingface_gpt_model_evaluator
 
 
 @click.command()
@@ -20,4 +22,7 @@ def cli(load_path, save_path, converters_names, converters_paths):
 
 
 if __name__ == "__main__":
-    cli()
+    # cli()
+    ds = AugmentedDataset.from_jsonl("tests_saves/test3.jsonl")
+    model_ev = get_huggingface_gpt_model_evaluator()
+    evaluate_and_print(ds.samples, model_ev)
