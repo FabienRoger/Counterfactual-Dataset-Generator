@@ -30,6 +30,990 @@
         },
         {
             "male": [
+                "gods"
+            ],
+            "female": [
+                "goddesses"
+            ]
+        },
+        {
+            "male": [
+                "manager"
+            ],
+            "female": [
+                "manageress"
+            ]
+        },
+        {
+            "male": [
+                "barons"
+            ],
+            "female": [
+                "baronesses"
+            ]
+        },
+        {
+            "male": [
+                "nephew"
+            ],
+            "female": [
+                "niece"
+            ]
+        },
+        {
+            "male": [
+                "prince"
+            ],
+            "female": [
+                "princess"
+            ]
+        },
+        {
+            "male": [
+                "boars"
+            ],
+            "female": [
+                "sows"
+            ]
+        },
+        {
+            "male": [
+                "baron"
+            ],
+            "female": [
+                "baroness"
+            ]
+        },
+        {
+            "male": [
+                "stepfathers"
+            ],
+            "female": [
+                "stepmothers"
+            ]
+        },
+        {
+            "male": [
+                "wizard"
+            ],
+            "female": [
+                "witch"
+            ]
+        },
+        {
+            "male": [
+                "father"
+            ],
+            "female": [
+                "mother"
+            ]
+        },
+        {
+            "male": [
+                "stepsons"
+            ],
+            "female": [
+                "stepdaughters"
+            ]
+        },
+        {
+            "male": [
+                "sons-in-law"
+            ],
+            "female": [
+                "daughters-in-law"
+            ]
+        },
+        {
+            "male": [
+                "dukes"
+            ],
+            "female": [
+                "duchesses"
+            ]
+        },
+        {
+            "male": [
+                "boyfriend"
+            ],
+            "female": [
+                "girlfriend"
+            ]
+        },
+        {
+            "male": [
+                "fiances"
+            ],
+            "female": [
+                "fiancees"
+            ]
+        },
+        {
+            "male": [
+                "dad"
+            ],
+            "female": [
+                "mom"
+            ]
+        },
+        {
+            "male": [
+                "shepherd"
+            ],
+            "female": [
+                "shepherdess"
+            ]
+        },
+        {
+            "male": [
+                "uncles"
+            ],
+            "female": [
+                "aunts"
+            ]
+        },
+        {
+            "male": [
+                "beau"
+            ],
+            "female": [
+                "belle"
+            ]
+        },
+        {
+            "male": [
+                "males"
+            ],
+            "female": [
+                "females"
+            ]
+        },
+        {
+            "male": [
+                "hunter"
+            ],
+            "female": [
+                "huntress"
+            ]
+        },
+        {
+            "male": [
+                "beaus"
+            ],
+            "female": [
+                "belles"
+            ]
+        },
+        {
+            "male": [
+                "grandfathers"
+            ],
+            "female": [
+                "grandmothers"
+            ]
+        },
+        {
+            "male": [
+                "lads"
+            ],
+            "female": [
+                "lasses"
+            ]
+        },
+        {
+            "male": [
+                "daddies"
+            ],
+            "female": [
+                "mummies"
+            ]
+        },
+        {
+            "male": [
+                "step-son"
+            ],
+            "female": [
+                "step-daughter"
+            ]
+        },
+        {
+            "male": [
+                "masters"
+            ],
+            "female": [
+                "mistresses"
+            ]
+        },
+        {
+            "male": [
+                "policeman"
+            ],
+            "female": [
+                "policewoman"
+            ]
+        },
+        {
+            "male": [
+                "nephews"
+            ],
+            "female": [
+                "nieces"
+            ]
+        },
+        {
+            "male": [
+                "brother"
+            ],
+            "female": [
+                "sister"
+            ]
+        },
+        {
+            "male": [
+                "grandfather"
+            ],
+            "female": [
+                "grandmother"
+            ]
+        },
+        {
+            "male": [
+                "priest"
+            ],
+            "female": [
+                "priestess"
+            ]
+        },
+        {
+            "male": [
+                "hosts"
+            ],
+            "female": [
+                "hostesses"
+            ]
+        },
+        {
+            "male": [
+                "landlord"
+            ],
+            "female": [
+                "landlady"
+            ]
+        },
+        {
+            "male": [
+                "husband"
+            ],
+            "female": [
+                "wife"
+            ]
+        },
+        {
+            "male": [
+                "poet"
+            ],
+            "female": [
+                "poetess"
+            ]
+        },
+        {
+            "male": [
+                "landlords"
+            ],
+            "female": [
+                "landladies"
+            ]
+        },
+        {
+            "male": [
+                "fathers"
+            ],
+            "female": [
+                "mothers"
+            ]
+        },
+        {
+            "male": [
+                "masseur"
+            ],
+            "female": [
+                "masseuse"
+            ]
+        },
+        {
+            "male": [
+                "monks"
+            ],
+            "female": [
+                "nuns"
+            ]
+        },
+        {
+            "male": [
+                "usher"
+            ],
+            "female": [
+                "usherette"
+            ]
+        },
+        {
+            "male": [
+                "hero"
+            ],
+            "female": [
+                "heroine"
+            ]
+        },
+        {
+            "male": [
+                "stepson"
+            ],
+            "female": [
+                "stepdaughter"
+            ]
+        },
+        {
+            "male": [
+                "postman"
+            ],
+            "female": [
+                "postwoman"
+            ]
+        },
+        {
+            "male": [
+                "god"
+            ],
+            "female": [
+                "goddess"
+            ]
+        },
+        {
+            "male": [
+                "milkmen"
+            ],
+            "female": [
+                "milkmaids"
+            ]
+        },
+        {
+            "male": [
+                "stags"
+            ],
+            "female": [
+                "hinds"
+            ]
+        },
+        {
+            "male": [
+                "grandpa"
+            ],
+            "female": [
+                "grandma"
+            ]
+        },
+        {
+            "male": [
+                "chairmen"
+            ],
+            "female": [
+                "chairwomen"
+            ]
+        },
+        {
+            "male": [
+                "husbands"
+            ],
+            "female": [
+                "wives"
+            ]
+        },
+        {
+            "male": [
+                "grandpas"
+            ],
+            "female": [
+                "grandmas"
+            ]
+        },
+        {
+            "male": [
+                "stewards"
+            ],
+            "female": [
+                "stewardesses"
+            ]
+        },
+        {
+            "male": [
+                "murderer"
+            ],
+            "female": [
+                "murderess"
+            ]
+        },
+        {
+            "male": [
+                "manservant"
+            ],
+            "female": [
+                "maidservant"
+            ]
+        },
+        {
+            "male": [
+                "men"
+            ],
+            "female": [
+                "women"
+            ]
+        },
+        {
+            "male": [
+                "host"
+            ],
+            "female": [
+                "hostess"
+            ]
+        },
+        {
+            "male": [
+                "heirs"
+            ],
+            "female": [
+                "heiresses"
+            ]
+        },
+        {
+            "male": [
+                "masseurs"
+            ],
+            "female": [
+                "masseuses"
+            ]
+        },
+        {
+            "male": [
+                "boy"
+            ],
+            "female": [
+                "girl"
+            ]
+        },
+        {
+            "male": [
+                "male"
+            ],
+            "female": [
+                "female"
+            ]
+        },
+        {
+            "male": [
+                "son-in-law"
+            ],
+            "female": [
+                "daughter-in-law"
+            ]
+        },
+        {
+            "male": [
+                "waiter"
+            ],
+            "female": [
+                "waitress"
+            ]
+        },
+        {
+            "male": [
+                "tutors"
+            ],
+            "female": [
+                "governesses"
+            ]
+        },
+        {
+            "male": [
+                "priests"
+            ],
+            "female": [
+                "priestesses"
+            ]
+        },
+        {
+            "male": [
+                "bachelor"
+            ],
+            "female": [
+                "spinster"
+            ]
+        },
+        {
+            "male": [
+                "millionaire"
+            ],
+            "female": [
+                "millionairess"
+            ]
+        },
+        {
+            "male": [
+                "steward"
+            ],
+            "female": [
+                "stewardess"
+            ]
+        },
+        {
+            "male": [
+                "businessmen"
+            ],
+            "female": [
+                "businesswomen"
+            ]
+        },
+        {
+            "male": [
+                "congressman"
+            ],
+            "female": [
+                "congresswoman"
+            ]
+        },
+        {
+            "male": [
+                "emperor"
+            ],
+            "female": [
+                "empress"
+            ]
+        },
+        {
+            "male": [
+                "duke"
+            ],
+            "female": [
+                "duchess"
+            ]
+        },
+        {
+            "male": [
+                "sire"
+            ],
+            "female": [
+                "dam"
+            ]
+        },
+        {
+            "male": [
+                "son"
+            ],
+            "female": [
+                "daughter"
+            ]
+        },
+        {
+            "male": [
+                "sirs"
+            ],
+            "female": [
+                "madams"
+            ]
+        },
+        {
+            "male": [
+                "widower"
+            ],
+            "female": [
+                "widow"
+            ]
+        },
+        {
+            "male": [
+                "kings"
+            ],
+            "female": [
+                "queens"
+            ]
+        },
+        {
+            "male": [
+                "papas"
+            ],
+            "female": [
+                "mamas"
+            ]
+        },
+        {
+            "male": [
+                "grandsons"
+            ],
+            "female": [
+                "granddaughters"
+            ]
+        },
+        {
+            "male": [
+                "proprietor"
+            ],
+            "female": [
+                "proprietress"
+            ]
+        },
+        {
+            "male": [
+                "monk"
+            ],
+            "female": [
+                "nun"
+            ]
+        },
+        {
+            "male": [
+                "headmasters"
+            ],
+            "female": [
+                "headmistresses"
+            ]
+        },
+        {
+            "male": [
+                "grooms"
+            ],
+            "female": [
+                "brides"
+            ]
+        },
+        {
+            "male": [
+                "heir"
+            ],
+            "female": [
+                "heiress"
+            ]
+        },
+        {
+            "male": [
+                "boys"
+            ],
+            "female": [
+                "girls"
+            ]
+        },
+        {
+            "male": [
+                "gentleman"
+            ],
+            "female": [
+                "lady"
+            ]
+        },
+        {
+            "male": [
+                "uncle"
+            ],
+            "female": [
+                "aunt"
+            ]
+        },
+        {
+            "male": [
+                "he"
+            ],
+            "female": [
+                "she"
+            ]
+        },
+        {
+            "male": [
+                "king"
+            ],
+            "female": [
+                "queen"
+            ]
+        },
+        {
+            "male": [
+                "princes"
+            ],
+            "female": [
+                "princesses"
+            ]
+        },
+        {
+            "male": [
+                "policemen"
+            ],
+            "female": [
+                "policewomen"
+            ]
+        },
+        {
+            "male": [
+                "governor"
+            ],
+            "female": [
+                "matron"
+            ]
+        },
+        {
+            "male": [
+                "fiance"
+            ],
+            "female": [
+                "fiancee"
+            ]
+        },
+        {
+            "male": [
+                "step-father"
+            ],
+            "female": [
+                "step-mother"
+            ]
+        },
+        {
+            "male": [
+                "waiters"
+            ],
+            "female": [
+                "waitresses"
+            ]
+        },
+        {
+            "male": [
+                "mr"
+            ],
+            "female": [
+                "mrs"
+            ]
+        },
+        {
+            "male": [
+                "stepfather"
+            ],
+            "female": [
+                "stepmother"
+            ]
+        },
+        {
+            "male": [
+                "daddy"
+            ],
+            "female": [
+                "mummy"
+            ]
+        },
+        {
+            "male": [
+                "lords"
+            ],
+            "female": [
+                "ladies"
+            ]
+        },
+        {
+            "male": [
+                "widowers"
+            ],
+            "female": [
+                "widows"
+            ]
+        },
+        {
+            "male": [
+                "emperors"
+            ],
+            "female": [
+                "empresses"
+            ]
+        },
+        {
+            "male": [
+                "father-in-law"
+            ],
+            "female": [
+                "mother-in-law"
+            ]
+        },
+        {
+            "male": [
+                "abbot"
+            ],
+            "female": [
+                "abbess"
+            ]
+        },
+        {
+            "male": [
+                "sir"
+            ],
+            "female": [
+                "madam"
+            ]
+        },
+        {
+            "male": [
+                "actor"
+            ],
+            "female": [
+                "actress"
+            ]
+        },
+        {
+            "male": [
+                "mr."
+            ],
+            "female": [
+                "mrs."
+            ]
+        },
+        {
+            "male": [
+                "wizards"
+            ],
+            "female": [
+                "witches"
+            ]
+        },
+        {
+            "male": [
+                "actors"
+            ],
+            "female": [
+                "actresses"
+            ]
+        },
+        {
+            "male": [
+                "chairman"
+            ],
+            "female": [
+                "chairwoman"
+            ]
+        },
+        {
+            "male": [
+                "sorcerer"
+            ],
+            "female": [
+                "sorceress"
+            ]
+        },
+        {
+            "male": [
+                "postmaster"
+            ],
+            "female": [
+                "postmistress"
+            ]
+        },
+        {
+            "male": [
+                "brothers"
+            ],
+            "female": [
+                "sisters"
+            ]
+        },
+        {
+            "male": [
+                "lad"
+            ],
+            "female": [
+                "lass"
+            ]
+        },
+        {
+            "male": [
+                "headmaster"
+            ],
+            "female": [
+                "headmistress"
+            ]
+        },
+        {
+            "male": [
+                "papa"
+            ],
+            "female": [
+                "mama"
+            ]
+        },
+        {
+            "male": [
+                "milkman"
+            ],
+            "female": [
+                "milkmaid"
+            ]
+        },
+        {
+            "male": [
+                "heroes"
+            ],
+            "female": [
+                "heroines"
+            ]
+        },
+        {
+            "male": [
+                "man"
+            ],
+            "female": [
+                "woman"
+            ]
+        },
+        {
+            "male": [
+                "grandson"
+            ],
+            "female": [
+                "granddaughter"
+            ]
+        },
+        {
+            "male": [
+                "groom"
+            ],
+            "female": [
+                "bride"
+            ]
+        },
+        {
+            "male": [
+                "sons"
+            ],
+            "female": [
+                "daughters"
+            ]
+        },
+        {
+            "male": [
+                "congressmen"
+            ],
+            "female": [
+                "congresswomen"
+            ]
+        },
+        {
+            "male": [
+                "businessman"
+            ],
+            "female": [
+                "businesswoman"
+            ]
+        },
+        {
+            "male": [
+                "boyfriends"
+            ],
+            "female": [
+                "girlfriends"
+            ]
+        },
+        {
+            "male": [
                 "Aamir",
                 "Aaron",
                 "Abbey",
