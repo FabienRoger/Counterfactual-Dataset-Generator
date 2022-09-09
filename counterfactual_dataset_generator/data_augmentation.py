@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from typing import Any, Iterable, Literal, Mapping, NamedTuple, Optional, Sequence, Union
 from collections import OrderedDict
+from counterfactual_dataset_generator.config import VERBOSE
 from counterfactual_dataset_generator.converter_loading import SimpleConverter
 from counterfactual_dataset_generator.types import (
     AugmentedSample,
@@ -13,6 +14,9 @@ from counterfactual_dataset_generator.types import (
     Variation,
 )
 from attrs import define
+from tqdm import tqdm
+
+from counterfactual_dataset_generator.utils import maybe_tqdm
 
 default_dataset_paths: Mapping[str, str] = {
     "doublebind": "counterfactual_dataset_generator/data/examples/doublebind.jsonl"
@@ -107,7 +111,7 @@ class AugmentedDataset:
 
 def generate_variations_pair(converter: Converter, ds: Dataset) -> AugmentedDataset:
     augmented_samples = []
-    for sample in ds.samples:
+    for sample in maybe_tqdm(ds.samples, VERBOSE >= 2):
         variations = [
             Variation(converter.convert_to(sample.input, category), (category,)) for category in converter.categories
         ]
@@ -117,7 +121,7 @@ def generate_variations_pair(converter: Converter, ds: Dataset) -> AugmentedData
 
 def generate_all_variations(converters: Iterable[Converter], ds: Dataset) -> AugmentedDataset:
     augmented_samples = []
-    for sample in ds.samples:
+    for sample in maybe_tqdm(ds.samples, VERBOSE >= 2):
         variations = [Variation(sample.input, ())]
         for converter in converters:
             new_variations = []

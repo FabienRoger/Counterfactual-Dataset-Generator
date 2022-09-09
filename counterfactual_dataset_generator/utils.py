@@ -1,6 +1,9 @@
+import os
 from math import exp, log2
+from typing import Any, Callable, Iterable, Sequence, TypeVar
+
 import torch
-from typing import Any, Callable, Sequence, TypeVar
+from tqdm import tqdm
 
 T = TypeVar("T")
 
@@ -27,6 +30,7 @@ def perplexity(log_probs: Sequence[float]):
     """Take in natural log probs, returns (average) perplexity"""
     return exp(mean(log_probs))
 
+
 def concat_dicts(dicts: Sequence[dict[Any, torch.Tensor]]) -> dict[Any, torch.Tensor]:
     if not dicts:
         raise ValueError("dicts is empty")
@@ -35,3 +39,10 @@ def concat_dicts(dicts: Sequence[dict[Any, torch.Tensor]]) -> dict[Any, torch.Te
         if d.keys() != keys:
             raise ValueError("dicts must have the same keys")
     return {k: torch.cat([d[k] for d in dicts], dim=-1) for k in keys}
+
+
+def maybe_tqdm(it: Iterable[T], do_tqdm: bool = False, **kwargs) -> Iterable[T]:
+    if do_tqdm:
+        return tqdm(it, **kwargs)
+    else:
+        return it
