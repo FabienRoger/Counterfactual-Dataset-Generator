@@ -2,13 +2,14 @@ from functools import lru_cache
 from typing import Optional
 
 import torch
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 from counterfactual_dataset_generator.types import Input, ModelEvaluator, Output, Performance
 from counterfactual_dataset_generator.utils import concat_dicts, perplexity
 
 
 def get_huggingface_gpt_model_evaluator(model_name: str = "distilgpt2", device: str = "cpu") -> ModelEvaluator:
+    from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
     model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 

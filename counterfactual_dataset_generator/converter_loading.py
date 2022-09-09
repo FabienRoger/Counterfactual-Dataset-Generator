@@ -11,8 +11,6 @@ from attrs import define
 from counterfactual_dataset_generator.types import Category, Converter, Input
 from counterfactual_dataset_generator.utils import other
 
-nlp = spacy.load("en_core_web_sm")
-
 default_converter_paths: Mapping[str, str] = {
     "gender": "counterfactual_dataset_generator/data/converters/gender.json",
     "west_v_asia": "counterfactual_dataset_generator/data/converters/west_v_asia.json",
@@ -48,6 +46,7 @@ DEFAULT_TRANSFORMATIONS = [
 class SimpleConverter(Converter):
     categories: tuple[Category, Category]
     correspondance_dict: CorrespondanceDict
+    nlp: spacy.language.Language = spacy.load("en_core_web_sm")
 
     @classmethod
     def from_default(cls, name: str = "gender"):
@@ -79,7 +78,7 @@ class SimpleConverter(Converter):
 
     def convert_to(self, inp: Input, to: Category) -> Input:
         from_category = other(self.categories, to)
-        doc = nlp(inp)
+        doc = self.nlp(inp)
         r = ""
         position_in_text = 0
         for t in doc:

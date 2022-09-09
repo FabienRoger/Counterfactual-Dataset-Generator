@@ -1,4 +1,5 @@
 import click
+from counterfactual_dataset_generator.classification_models import get_huggingface_classification_model_evaluator
 from counterfactual_dataset_generator.converter_loading import SimpleConverter
 
 from counterfactual_dataset_generator.data_augmentation import AugmentedDataset, augment_dataset
@@ -26,4 +27,7 @@ if __name__ == "__main__":
     cli()
     # ds = AugmentedDataset.from_jsonl("tests_saves/test3.jsonl")
     # model_ev = get_huggingface_gpt_model_evaluator()
+    # evaluate_and_print(ds.samples, model_ev)
+    # ds = AugmentedDataset.from_jsonl("tests_saves/testtwit2.jsonl")
+    # model_ev = get_huggingface_classification_model_evaluator()
     # evaluate_and_print(ds.samples, model_ev)

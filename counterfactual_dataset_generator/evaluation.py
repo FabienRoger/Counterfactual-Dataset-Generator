@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Iterable, Mapping, TypeVar
 from attrs import define
 from counterfactual_dataset_generator.agregators import AveragePerformancePerCategory
+from counterfactual_dataset_generator.config import VERBOSE
 from counterfactual_dataset_generator.data_augmentation import AugmentedDataset
 from counterfactual_dataset_generator.generative_models import get_huggingface_gpt_model_evaluator
 
@@ -14,7 +15,7 @@ from counterfactual_dataset_generator.types import (
     Results,
     StatsAgregator,
 )
-from counterfactual_dataset_generator.utils import mean
+from counterfactual_dataset_generator.utils import maybe_tqdm, mean
 
 
 T = TypeVar("T")
@@ -22,7 +23,7 @@ T = TypeVar("T")
 
 def compute_performances(samples: Iterable[AugmentedSample], model: ModelEvaluator) -> Results:
     performances = []
-    for sample in samples:
+    for sample in maybe_tqdm(samples, VERBOSE >= 2):
         performance = [
             (model(variation.text, sample.expected_output), variation.categories)
             for variation in sample.get_variations()
