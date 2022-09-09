@@ -1,0 +1,3 @@
+gender names: nltk
+gender occupation: https://arxiv.org/pdf/1807.11714.pdf
+race: "gender" by Jorg Michae
