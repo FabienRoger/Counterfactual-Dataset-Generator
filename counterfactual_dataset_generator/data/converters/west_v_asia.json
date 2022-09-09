@@ -6,7 +6,6 @@
     "correspondances": [
         {
             "west": [
-                [
                     "Jean",
                     "José",
                     "Manuel",
@@ -508,10 +507,8 @@
                     "Lothar",
                     "Claes",
                     "Henrique"
-                ]
             ],
             "asia": [
-                [
                     "David",
                     "Mohammad",
                     "Giorgi",
@@ -1012,7 +1009,6 @@
                     "Muzaffer",
                     "Nadim",
                     "Namig"
-                ]
             ]
         },
         {

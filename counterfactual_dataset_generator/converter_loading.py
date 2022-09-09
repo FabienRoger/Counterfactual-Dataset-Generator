@@ -13,7 +13,10 @@ from counterfactual_dataset_generator.utils import other
 
 nlp = spacy.load("en_core_web_sm")
 
-default_converter_paths: Mapping[str, str] = {"gender": "counterfactual_dataset_generator/data/converters/gender.json"}
+default_converter_paths: Mapping[str, str] = {
+    "gender": "counterfactual_dataset_generator/data/converters/gender.json",
+    "west_v_asia": "counterfactual_dataset_generator/data/converters/west_v_asia.json",
+}
 
 
 @define
@@ -52,7 +55,7 @@ class SimpleConverter(Converter):
 
     @classmethod
     def from_json(cls, path: str, transformations: Iterable[Transformation] = DEFAULT_TRANSFORMATIONS):
-        with Path(path).open("r") as f:
+        with Path(path).open("r", encoding="utf-8") as f:
             json_dict = json.loads(f.read())
             return SimpleConverter.from_ds(ConverterDataset.from_json(json_dict), transformations)
 

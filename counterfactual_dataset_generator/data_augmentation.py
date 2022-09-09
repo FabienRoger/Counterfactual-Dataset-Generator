@@ -77,7 +77,7 @@ class Dataset:
 
     @classmethod
     def from_jsonl(cls, path: str):
-        with Path(path).open("r") as f:
+        with Path(path).open("r", encoding="utf-8") as f:
             data = [json.loads(line) for line in f]
             samples = []
             for d in data:
@@ -90,14 +90,14 @@ class AugmentedDataset:
     samples: list[SampleWithVariations]
 
     def save_to_jsonl(self, path: str):
-        with Path(path).open("w") as f:
+        with Path(path).open("w", encoding="utf-8") as f:
             for sample in self.samples:
                 json.dump(sample.to_json_dict(), f)
                 f.write("\n")
 
     @classmethod
     def from_jsonl(cls, path: str):
-        with Path(path).open("r") as f:
+        with Path(path).open("r", encoding="utf-8") as f:
             data = [json.loads(line) for line in f]
             samples = []
             for d in data:

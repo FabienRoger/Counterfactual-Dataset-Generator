@@ -53,5 +53,5 @@ def evaluate_and_save(
     path: str,
     agregator: StatsAgregator[T] = AveragePerformancePerCategory(),
 ):
-    with Path(path).open("w") as f:
+    with Path(path).open("w", encoding="utf-8") as f:
         agregator.save_agregation(compute_performances(samples, model), file=f)

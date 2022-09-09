@@ -15,6 +15,7 @@ def cli(load_path, save_path, converters_names, converters_paths):
     """Simple program that greets NAME for a total of COUNT times.
 
     Example use: python -m counterfactual_dataset_generator --load-path counterfactual_dataset_generator\data\examples\doublebind.jsonl --save-path tests_saves/test3.jsonl"""
+    # TODO: multiple is broken, fix it
     converters = [SimpleConverter.from_default(name) for name in converters_names] + [
         SimpleConverter.from_json(path) for path in converters_paths
     ]
@@ -22,7 +23,7 @@ def cli(load_path, save_path, converters_names, converters_paths):
 
 
 if __name__ == "__main__":
-    # cli()
-    ds = AugmentedDataset.from_jsonl("tests_saves/test3.jsonl")
-    model_ev = get_huggingface_gpt_model_evaluator()
-    evaluate_and_print(ds.samples, model_ev)
+    cli()
+    # ds = AugmentedDataset.from_jsonl("tests_saves/test3.jsonl")
+    # model_ev = get_huggingface_gpt_model_evaluator()
+    # evaluate_and_print(ds.samples, model_ev)
