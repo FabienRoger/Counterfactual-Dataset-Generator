@@ -40,6 +40,8 @@ def concat_dicts(dicts: Sequence[dict[Any, torch.Tensor]]) -> dict[Any, torch.Te
             raise ValueError("dicts must have the same keys")
     return {k: torch.cat([d[k] for d in dicts], dim=-1) for k in keys}
 
+def remove_last_tok(d: dict[Any, torch.Tensor]) -> dict[Any, torch.Tensor]:
+    return {k: t[:, :-1] for k,t in d.items()}
 
 def maybe_tqdm(it: Iterable[T], do_tqdm: bool = False, **kwargs) -> Iterable[T]:
     if do_tqdm:
