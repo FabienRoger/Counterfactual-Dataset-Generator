@@ -4,7 +4,21 @@ from attrs import define
 
 Input = str  # The input to an NLP mode
 Output = list[str]  # The different acceptable outputs of the NLP, string label or number, but in string format
+
+Performance = float  # usually between zero & one (one is better)
+ModelEvaluator = Callable[[Input, Output], Performance]
+
 Category = str  # The different kinds of data produced by converters
+
+
+class Converter(metaclass=abc.ABCMeta):
+    @abc.abstractproperty
+    def categories(self) -> tuple[Category, Category]:
+        ...
+
+    @abc.abstractmethod
+    def convert_to(self, inp: Input, to: Category) -> Input:
+        ...
 
 
 class Variation(NamedTuple):
@@ -26,20 +40,9 @@ class AugmentedSample(metaclass=abc.ABCMeta):
         ...
 
 
-class Converter(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
-    def categories(self) -> tuple[Category, Category]:
-        ...
-
-    @abc.abstractmethod
-    def convert_to(self, inp: Input, to: Category) -> Input:
-        ...
-
-
-Performance = float  # between zero & one (one is better)
-ModelEvaluator = Callable[[Input, Output], Performance]
 SampleResults = Iterable[tuple[Performance, tuple[Category, ...]]]
 Results = Iterable[SampleResults]
+
 T = TypeVar("T")
 
 
