@@ -4,3 +4,4 @@ tests_saves
 my_data
 .env
 *.egg-info/
+.ipynb_checkpoints/
