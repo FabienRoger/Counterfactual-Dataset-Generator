@@ -2,9 +2,9 @@ import abc
 from typing import Any, Callable, Generic, Iterable, NamedTuple, Optional, Sequence, TextIO, TypeVar
 from attrs import define
 
-Input = str
-Output = Optional[str]
-Category = str
+Input = str  # The input to an NLP mode
+Output = str  # The expected output of the NLP, string, number, list, but in string format
+Category = str  # The different kinds of data produced by converters
 
 
 class Variation(NamedTuple):
@@ -18,7 +18,7 @@ class AugmentedSample(metaclass=abc.ABCMeta):
         ...
 
     @abc.abstractproperty
-    def expected_output(self) -> Optional[Output]:
+    def expected_output(self) -> Output:
         ...
 
     @abc.abstractmethod
@@ -37,7 +37,7 @@ class Converter(metaclass=abc.ABCMeta):
 
 
 Performance = float  # between zero & one (one is better)
-ModelEvaluator = Callable[[Input, Optional[Output]], Performance]
+ModelEvaluator = Callable[[Input, Output], Performance]
 SampleResults = Iterable[tuple[Performance, tuple[Category, ...]]]
 Results = Iterable[SampleResults]
 T = TypeVar("T")

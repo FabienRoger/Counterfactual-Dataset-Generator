@@ -1,7 +1,5 @@
-from collections import defaultdict
 from pathlib import Path
 from typing import Iterable, Mapping, TypeVar
-from attrs import define
 from counterfactual_dataset_generator.agregators import AveragePerformancePerCategory
 from counterfactual_dataset_generator.config import VERBOSE
 from counterfactual_dataset_generator.data_augmentation import AugmentedDataset

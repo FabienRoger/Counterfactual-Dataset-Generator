@@ -1,9 +1,8 @@
-from functools import lru_cache
 import json
 from collections import defaultdict
 from pathlib import Path
 from random import choice
-from typing import Callable, DefaultDict, Iterable, Mapping, MutableMapping, OrderedDict, Sequence
+from typing import Callable, DefaultDict, Iterable, Mapping, OrderedDict, Sequence
 
 import spacy
 from attrs import define
@@ -53,13 +52,21 @@ class SimpleConverter(Converter):
         return SimpleConverter.from_json(default_converter_paths[name])
 
     @classmethod
-    def from_json(cls, path: str, transformations: Iterable[Transformation] = DEFAULT_TRANSFORMATIONS):
+    def from_json(
+        cls,
+        path: str,
+        transformations: Iterable[Transformation] = DEFAULT_TRANSFORMATIONS,
+    ):
         with Path(path).open("r", encoding="utf-8") as f:
             json_dict = json.loads(f.read())
             return SimpleConverter.from_ds(ConverterDataset.from_json(json_dict), transformations)
 
     @classmethod
-    def from_ds(cls, ds: ConverterDataset, transformations: Iterable[Transformation] = DEFAULT_TRANSFORMATIONS):
+    def from_ds(
+        cls,
+        ds: ConverterDataset,
+        transformations: Iterable[Transformation] = DEFAULT_TRANSFORMATIONS,
+    ):
         correspondance_dict: CorrespondanceDict = {}
         for c in ds.categories:
             correspondance_dict[c] = defaultdict(lambda: [])

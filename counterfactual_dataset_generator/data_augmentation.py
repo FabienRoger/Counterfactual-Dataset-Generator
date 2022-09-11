@@ -16,7 +16,11 @@ default_dataset_paths: Mapping[str, str] = {
 }
 
 
-def augment_dataset(dataset_path: str, save_path: str = ".", converters: Iterable[Union[str, Converter]] = ["gender"]):
+def augment_dataset(
+    dataset_path: str,
+    save_path: str = ".",
+    converters: Iterable[Union[str, Converter]] = ["gender"],
+):
     converters_ = [
         SimpleConverter.from_default(converter) if isinstance(converter, str) else converter for converter in converters
     ]
@@ -28,11 +32,11 @@ def augment_dataset(dataset_path: str, save_path: str = ".", converters: Iterabl
 @define
 class Sample:
     input: Input
-    expected_output: Optional[Output] = None
+    expected_output: Output = ""
 
     @classmethod
     def from_json_dict(cls, json_dict):
-        expected_output = json_dict["expected_output"] if "expected_output" in json_dict else None
+        expected_output = json_dict["expected_output"] if "expected_output" in json_dict else ""
         return Sample(json_dict["input"], expected_output)
 
 
@@ -43,7 +47,7 @@ class SampleWithVariations(Sample, AugmentedSample):
     def get_variations(self) -> Sequence[Variation]:
         return self.variations
 
-    def get_expected_output(self) -> Optional[Output]:
+    def get_expected_output(self) -> Output:
         return self.expected_output
 
     @classmethod
@@ -52,14 +56,13 @@ class SampleWithVariations(Sample, AugmentedSample):
 
     @classmethod
     def from_json_dict(cls, json_dict):
-        expected_output = json_dict["expected_output"] if "expected_output" in json_dict else None
+        expected_output = json_dict["expected_output"] if "expected_output" in json_dict else ""
         variations = [Variation(v["text"], tuple(v["categories"])) for v in json_dict["variations"]]
         return SampleWithVariations(json_dict["input"], expected_output, variations)
 
     def to_json_dict(self) -> OrderedDict:
         d: OrderedDict[str, Any] = OrderedDict({"input": self.input})
-        if self.expected_output is not None:
-            d["expected_output"] = self.expected_output
+        d["expected_output"] = self.expected_output
         d["variations"] = [{"text": text, "categories": list(categories)} for text, categories in self.variations]
         return d
 

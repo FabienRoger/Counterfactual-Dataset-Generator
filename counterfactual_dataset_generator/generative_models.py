@@ -13,8 +13,8 @@ def get_huggingface_gpt_model_evaluator(model_name: str = "distilgpt2", device: 
     model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 
-    def run(inp: Input, out: Optional[Output]) -> Performance:
-        if out is None:
+    def run(inp: Input, out: Output) -> Performance:
+        if len(out) == 0:
             raise ValueError("Expected output should be provided for gpt models")
 
         tokens_inp = tokenizer(inp, return_tensors="pt").to(model.device)
