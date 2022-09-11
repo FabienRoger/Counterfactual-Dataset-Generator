@@ -111,5 +111,7 @@ if __name__ == "__main__":
     )
     # python -m counterfactual_dataset_generator augment counterfactual_dataset_generator\data\datasets\tiny-test.jsonl counterfactual_dataset_generator\data\augdatasets\tiny-test.jsonl gender
     # python -m counterfactual_dataset_generator augment counterfactual_dataset_generator\data\datasets\twitter-sentiment.jsonl counterfactual_dataset_generator\data\augdatasets\twitter-sentiment.jsonl gender
+    # python -m counterfactual_dataset_generator augment counterfactual_dataset_generator\data\datasets\doublebind.jsonl counterfactual_dataset_generator\data\augdatasets\doublebind.jsonl gender
     # python -m counterfactual_dataset_generator evaluate counterfactual_dataset_generator\data\augdatasets\tiny-test.jsonl --hf_gpt_model
     # python -m counterfactual_dataset_generator evaluate tests_saves/testtwit2.jsonl --hf_classifier_model
+    # python -m counterfactual_dataset_generator evaluate counterfactual_dataset_generator\data\augdatasets\doublebind.jsonl --hf_gpt_model
