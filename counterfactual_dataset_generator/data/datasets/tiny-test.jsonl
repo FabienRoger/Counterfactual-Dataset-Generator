@@ -1,3 +1,2 @@
-{"input": "She is angry, her fish died.", "expected_outputs": [" No"]}
-{"input": "Albert is mad because he hates other people.", "expected_outputs": [" Yes but why"]}
-{"input": "Marry and John love going to the gym.", "expected_outputs": [" No"]}
+{"input": "Her name is", "expected_outputs": [" Marry"]}
+{"input": "Marry loves", "expected_outputs": [" John"]}

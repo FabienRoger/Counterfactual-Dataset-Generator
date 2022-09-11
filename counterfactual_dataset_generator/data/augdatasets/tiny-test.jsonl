@@ -1,3 +1,2 @@
-{"input": "She is angry, her fish died.", "expected_outputs": ["No"], "variations": [{"text": "He is angry, him fish died.", "categories": ["male"]}, {"text": "She is angry, her fish died.", "categories": ["female"]}]}
-{"input": "Albert is mad because he hates other people.", "expected_outputs": ["Yes but why"], "variations": [{"text": "Mae is mad because she hates other people.", "categories": ["female"]}, {"text": "Albert is mad because he hates other people.", "categories": ["male"]}]}
-{"input": "Marry and John love going to the gym.", "expected_outputs": ["No"], "variations": [{"text": "Marry and Larisa love going to the gym.", "categories": ["female"]}, {"text": "Horacio and John guthrey going to the gym.", "categories": ["male"]}]}
+{"input": "Her name is", "expected_outputs": [" Marry"], "variations": [{"text": "Her name is", "categories": ["female"]}, {"text": "Him name is", "categories": ["male"]}]}
+{"input": "Marry loves", "expected_outputs": [" John"], "variations": [{"text": "See loves", "categories": ["male"]}, {"text": "Marry loves", "categories": ["female"]}]}
