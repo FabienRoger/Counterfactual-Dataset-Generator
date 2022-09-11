@@ -50,6 +50,10 @@ def get_huggingface_gpt_model_evaluator(
 def get_correct_logprobs(
     tokens_inp: torch.Tensor, token_outs: torch.Tensor, model: torch.nn.Module
 ) -> list[torch.Tensor]:
+
+    if all([o["input_ids"].shape[-1] == 1 for o in token_outs]):
+        return get_correct_1tok_logprobs(tokens_inp, token_outs, model)
+
     inp_length = tokens_inp["input_ids"].shape[-1]
 
     result: list[torch.Tensor] = []
@@ -64,8 +68,23 @@ def get_correct_logprobs(
         log_probs = torch.log_softmax(logits, dim=-1)[inp_length - 1 :, :]
 
         assert len(log_probs) == len(tokens_out["input_ids"][0])
-        correct_log_probs = log_probs[:, tokens_out["input_ids"][0]][:, 0]
+        correct_log_probs = torch.gather(log_probs, 1, tokens_out["input_ids"][0, :, None])[:, 0]
 
         result.append(correct_log_probs)
 
     return result
+
+
+def get_correct_1tok_logprobs(
+    tokens_inp: torch.Tensor, token_outs: torch.Tensor, model: torch.nn.Module
+) -> list[torch.Tensor]:
+
+    with torch.no_grad():
+        logits = model(**tokens_inp).logits[0].to("cpu")
+    log_probs = torch.log_softmax(logits, dim=-1)[-1:, :]
+
+    good_tokens = [o["input_ids"][0, 0].item() for o in token_outs]
+
+    correct_log_probs = [log_probs[:, i] for i in good_tokens]
+
+    return correct_log_probs
