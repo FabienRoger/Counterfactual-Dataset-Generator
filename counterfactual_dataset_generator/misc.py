@@ -1,8 +1,8 @@
 def overwrite_fire_help_text():  # type: ignore
-    import fire
     import inspect
-    from fire import inspectutils
-    from fire.core import _ParseKeywordArgs
+    import fire  # type: ignore
+    from fire import inspectutils  # type: ignore
+    from fire.core import _ParseKeywordArgs  # type: ignore
 
     def NewHelpText(component, trace=None, verbose=False):
         if callable(component):

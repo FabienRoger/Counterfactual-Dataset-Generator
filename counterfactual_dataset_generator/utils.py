@@ -3,7 +3,7 @@ from math import exp, log2
 from typing import Any, Callable, Iterable, Sequence, TypeVar
 
 import torch
-from tqdm import tqdm
+from tqdm import tqdm  # type: ignore
 
 T = TypeVar("T")
 

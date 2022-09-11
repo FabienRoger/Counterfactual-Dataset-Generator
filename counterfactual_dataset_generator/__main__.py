@@ -1,8 +1,9 @@
-from typing import Optional
-import fire
+from typing import Optional, Union
+
+import fire  # type: ignore
+
 from counterfactual_dataset_generator.classification_models import get_huggingface_classification_model_evaluator
 from counterfactual_dataset_generator.converter_loading import SimpleConverter, default_converter_paths
-
 from counterfactual_dataset_generator.data_augmentation import AugmentedDataset, augment_dataset
 from counterfactual_dataset_generator.evaluation import evaluate_and_print
 from counterfactual_dataset_generator.generative_models import get_huggingface_gpt_model_evaluator
@@ -10,23 +11,7 @@ from counterfactual_dataset_generator.misc import overwrite_fire_help_text
 from counterfactual_dataset_generator.types import Converter
 
 
-# @click.command()
-# @click.option("--load-path", prompt="Loading path ", help="Path to the dataset to load.")
-# @click.option("--save-path", prompt="Saving path ", help="Path where the augmented dataset will be saved.")
-# @click.option("--converters-names", default=["gender"], help="Name of the converters to use.", multiple=True)
-# @click.option("--converters-paths", default=[], help="Paths to the json files describing converters.", multiple=True)
-# def cli(load_path, save_path, converters_names, converters_paths):
-#     """Simple program that greets NAME for a total of COUNT times.
-
-#     Example use: python -m counterfactual_dataset_generator --load-path counterfactual_dataset_generator\data\examples\doublebind.jsonl --save-path tests_saves/test3.jsonl"""
-#     # TODO: multiple is broken, fix it
-#     converters = [SimpleConverter.from_default(name) for name in converters_names] + [
-#         SimpleConverter.from_json(path) for path in converters_paths
-#     ]
-#     augment_dataset(load_path, save_path, converters)
-
-
-def augment(load_path, save_path, *converters, help=False):
+def augment(load_path: str, save_path: str, *converters: str):
     """Add counterfactuals to the dataset and save it elsewhere.
 
     Args
@@ -45,12 +30,8 @@ def augment(load_path, save_path, *converters, help=False):
     - counterfactual_dataset_generator augment LOAD_PATH SAVE_PATH
     """
 
-    if help:
-        print(augment.__doc__)
-        return
-
     if not converters:
-        converters = ["gender"]
+        converters = ("gender",)
 
     converters_objs: list[Converter] = []
     for c_str in converters:
@@ -66,7 +47,12 @@ def augment(load_path, save_path, *converters, help=False):
     print("Done!")
 
 
-def evaluate(load_path=None, save_path=None, hf_gpt_model=None, hf_classifier_model=None, hep=False):  # type: ignore
+def evaluate(
+    load_path: str,
+    save_path: Optional[str] = None,
+    hf_gpt_model: Union[None, bool, str] = None,
+    hf_classifier_model: Union[None, bool, str] = None,
+):
     """Evaluate the provided model.
 
     Args
@@ -87,12 +73,6 @@ def evaluate(load_path=None, save_path=None, hf_gpt_model=None, hf_classifier_mo
     - counterfactual_dataset_generator evaluate LOAD_PATH --hf-classifier-model
       (use cardiffnlp/twitter-roberta-base-sentiment-latest and print the results)
     """
-
-    if hep:
-        print(evaluate.__doc__)
-        return
-
-    assert load_path is not None
 
     ds = AugmentedDataset.from_jsonl(load_path)
     if hf_gpt_model is not None:

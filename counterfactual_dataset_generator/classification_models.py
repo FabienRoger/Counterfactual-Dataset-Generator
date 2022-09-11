@@ -4,7 +4,7 @@ from counterfactual_dataset_generator.types import Input, ModelEvaluator, Output
 
 
 def get_huggingface_classification_model_evaluator(
-    pipeline: str = "sentiment-analysis",
+    pipeline_name: str = "sentiment-analysis",
     model_name: str = "cardiffnlp/twitter-roberta-base-sentiment-latest",
 ) -> ModelEvaluator:
     from transformers import pipeline
@@ -12,7 +12,7 @@ def get_huggingface_classification_model_evaluator(
 
     transformers.logging.set_verbosity_error()
 
-    sentiment_task = pipeline("sentiment-analysis", model=model_name, tokenizer=model_name)
+    sentiment_task = pipeline(pipeline_name, model=model_name, tokenizer=model_name)
 
     def run(inp: Input, out: Optional[Output]) -> Performance:
         pred = sentiment_task(inp)[0]

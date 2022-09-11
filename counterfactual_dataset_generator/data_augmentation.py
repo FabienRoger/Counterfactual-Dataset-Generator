@@ -1,21 +1,14 @@
-from ast import Or
 import json
+from ast import Or
+from collections import OrderedDict
 from pathlib import Path
 from typing import Any, Iterable, Literal, Mapping, NamedTuple, Optional, Sequence, Union
-from collections import OrderedDict
+
+from attrs import define
+
 from counterfactual_dataset_generator.config import VERBOSE
 from counterfactual_dataset_generator.converter_loading import SimpleConverter
-from counterfactual_dataset_generator.types import (
-    AugmentedSample,
-    Category,
-    Converter,
-    Input,
-    Output,
-    Variation,
-)
-from attrs import define
-from tqdm import tqdm
-
+from counterfactual_dataset_generator.types import AugmentedSample, Category, Converter, Input, Output, Variation
 from counterfactual_dataset_generator.utils import maybe_tqdm
 
 default_dataset_paths: Mapping[str, str] = {
