@@ -23,7 +23,7 @@ def load(
     with open(save_path, "w", encoding="utf-8") as outfile:
         for i, row in df.iterrows():
             if accepted_outputs is None or row[output_col] in accepted_outputs:
-                json_dict = {"input": row[input_col], "expected_output": row[output_col]}
+                json_dict = {"input": row[input_col], "expected_outputs": [row[output_col]]}
                 json.dump(json_dict, outfile)
                 outfile.write("\n")
                 lines_written += 1

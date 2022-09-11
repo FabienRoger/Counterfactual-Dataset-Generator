@@ -109,6 +109,7 @@ if __name__ == "__main__":
             "evaluate": evaluate,
         },
     )
-    # python -m counterfactual_dataset_generator augment counterfactual_dataset_generator\data\examples\doublebind.jsonl tests_saves/test3.jsonl gender west_v_asia
-    # python -m counterfactual_dataset_generator evaluate tests_saves/test3.jsonl --hf_gpt_model
+    # python -m counterfactual_dataset_generator augment counterfactual_dataset_generator\data\datasets\tiny-test.jsonl counterfactual_dataset_generator\data\augdatasets\tiny-test.jsonl gender
+    # python -m counterfactual_dataset_generator augment counterfactual_dataset_generator\data\datasets\twitter-sentiment.jsonl counterfactual_dataset_generator\data\augdatasets\twitter-sentiment.jsonl gender
+    # python -m counterfactual_dataset_generator evaluate counterfactual_dataset_generator\data\augdatasets\tiny-test.jsonl --hf_gpt_model
     # python -m counterfactual_dataset_generator evaluate tests_saves/testtwit2.jsonl --hf_classifier_model

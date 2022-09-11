@@ -3,7 +3,7 @@ from typing import Any, Callable, Generic, Iterable, NamedTuple, Optional, Seque
 from attrs import define
 
 Input = str  # The input to an NLP mode
-Output = str  # The expected output of the NLP, string, number, list, but in string format
+Output = list[str]  # The different acceptable outputs of the NLP, string label or number, but in string format
 Category = str  # The different kinds of data produced by converters
 
 

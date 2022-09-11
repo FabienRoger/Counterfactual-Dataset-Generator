@@ -15,12 +15,15 @@ def get_huggingface_classification_model_evaluator(
     sentiment_task = pipeline(pipeline_name, model=model_name, tokenizer=model_name)
 
     def run(inp: Input, out: Output) -> Performance:
+        assert len(out) == 1, "There should be only one correct label"
+        true_label = out[0]
+
         pred = sentiment_task(inp)[0]
         if "label" not in pred:
             raise ValueError(f"pipeline shoud ouput a dict containing a label field but {pred=}")
-        perf = 1.0 if out == pred["label"] else 0.0
+        perf = 1.0 if true_label == pred["label"] else 0.0
         if VERBOSE >= 4:
-            print(f"{inp=} {out=} {pred=} {perf=}")
+            print(f"{inp=} {true_label=} {pred=} {perf=}")
         return perf
 
     return run
