@@ -4,6 +4,7 @@ def overwrite_fire_help_text():  # type: ignore
     from fire import inspectutils  # type: ignore
     from fire.core import _ParseKeywordArgs  # type: ignore
 
+    # Replace the default help text by the __doc__
     def NewHelpText(component, trace=None, verbose=False):
         if callable(component):
             return component.__doc__
@@ -15,6 +16,7 @@ def overwrite_fire_help_text():  # type: ignore
 
     fire.helptext.HelpText = NewHelpText
 
+    # Remove the INFO line
     def _NewIsHelpShortcut(component_trace, remaining_args):
         show_help = False
         if remaining_args:
@@ -31,6 +33,7 @@ def overwrite_fire_help_text():  # type: ignore
                     show_help = target not in members
         if show_help:
             component_trace.show_help = True
+            # [Where the INFO line was printed]
         return show_help
 
     fire.core._IsHelpShortcut = _NewIsHelpShortcut
