@@ -1,6 +1,6 @@
 from collections import defaultdict
 from statistics import geometric_mean
-from typing import Iterable, Mapping, Optional, TextIO, TypeVar
+from typing import Any, Iterable, Mapping, Optional, TextIO, TypeVar
 from attrs import define
 
 from countergen.types import (
@@ -64,3 +64,15 @@ class AverageDifference(StatsAgregator):
             file=file,
         )
         print(f"{r:.6f}", file=file)
+
+
+@define
+class MultipleStatsAgregator(StatsAgregator):
+    agregators: list[StatsAgregator]
+
+    def __call__(self, performances: Results) -> list[Any]:
+        return [ag(performances) for ag in self.agregators]
+
+    def save_agregation(self, performances: Results, file: Optional[TextIO] = None):
+        for ag in self.agregators:
+            ag.save_agregation(performances, file)
