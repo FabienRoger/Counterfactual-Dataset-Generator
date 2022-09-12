@@ -1,3 +1,7 @@
-sklearn
-transformers
-torch
+attrs>=22.1.0
+fire>=0.4.0
+python-dotenv>=0.21.0
+spacy>=3.4.1
+torch>=1.11.0
+tqdm>=4.62.3
+transformers>=4.16.2
