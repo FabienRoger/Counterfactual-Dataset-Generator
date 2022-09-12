@@ -1,19 +1,24 @@
 from functools import lru_cache
 from math import exp
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import torch
 
 from countergen.types import Input, ModelEvaluator, Output, Performance
-from countergen.utils import concat_dicts, perplexity, remove_last_tok
+from countergen.utils import concat_dicts, perplexity, remove_last_tok, unwrap_or
+
+if TYPE_CHECKING:
+    from transformers import BatchEncoding
 
 metrics = ["perplexity", "probability"]
 
 
 def get_huggingface_gpt_model_evaluator(
-    model_name: str = "distilgpt2", device: str = "cpu", metric: str = "probability"
+    model_name: str = "distilgpt2", device: Optional[str] = None, metric: str = "probability"
 ) -> ModelEvaluator:
     from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+    device = unwrap_or(device, "cuda:0" if torch.cuda.is_available() else "cpu")
 
     model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
@@ -48,7 +53,7 @@ def get_huggingface_gpt_model_evaluator(
 
 
 def get_correct_logprobs(
-    tokens_inp: torch.Tensor, token_outs: torch.Tensor, model: torch.nn.Module
+    tokens_inp: BatchEncoding, token_outs: list[BatchEncoding], model: torch.nn.Module
 ) -> list[torch.Tensor]:
 
     if all([o["input_ids"].shape[-1] == 1 for o in token_outs]):
@@ -76,7 +81,7 @@ def get_correct_logprobs(
 
 
 def get_correct_1tok_logprobs(
-    tokens_inp: torch.Tensor, token_outs: torch.Tensor, model: torch.nn.Module
+    tokens_inp: BatchEncoding, token_outs: list[BatchEncoding], model: torch.nn.Module
 ) -> list[torch.Tensor]:
 
     with torch.no_grad():

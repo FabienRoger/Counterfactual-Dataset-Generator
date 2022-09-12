@@ -1,6 +1,6 @@
 import os
 from math import exp, log2
-from typing import Any, Callable, Iterable, Sequence, TypeVar
+from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, TypeVar
 
 import torch
 from tqdm import tqdm  # type: ignore
@@ -18,6 +18,10 @@ def other(t: tuple[T, T], x: T) -> T:
     return t[0]
 
 
+def unwrap_or(maybe: Optional[T], default: T) -> T:
+    return default if maybe is None else maybe
+
+
 def mean(l: Sequence[float]) -> float:
     return sum(l) / len(l)
 
@@ -31,7 +35,7 @@ def perplexity(log_probs: Sequence[float]):
     return exp(mean(log_probs))
 
 
-def concat_dicts(dicts: Sequence[dict[Any, torch.Tensor]]) -> dict[Any, torch.Tensor]:
+def concat_dicts(dicts: Sequence[Mapping[Any, torch.Tensor]]) -> dict[Any, torch.Tensor]:
     if not dicts:
         raise ValueError("dicts is empty")
     keys = dicts[0].keys()
@@ -40,8 +44,10 @@ def concat_dicts(dicts: Sequence[dict[Any, torch.Tensor]]) -> dict[Any, torch.Te
             raise ValueError("dicts must have the same keys")
     return {k: torch.cat([d[k] for d in dicts], dim=-1) for k in keys}
 
-def remove_last_tok(d: dict[Any, torch.Tensor]) -> dict[Any, torch.Tensor]:
-    return {k: t[:, :-1] for k,t in d.items()}
+
+def remove_last_tok(d: Mapping[Any, torch.Tensor]) -> dict[Any, torch.Tensor]:
+    return {k: t[:, :-1] for k, t in d.items()}
+
 
 def maybe_tqdm(it: Iterable[T], do_tqdm: bool = False, **kwargs) -> Iterable[T]:
     if do_tqdm:
