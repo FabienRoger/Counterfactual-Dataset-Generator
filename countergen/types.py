@@ -1,5 +1,5 @@
 import abc
-from typing import Any, Callable, Generic, Iterable, NamedTuple, Optional, Sequence, TextIO, TypeVar
+from typing import Any, Callable, Generic, Iterable, Mapping, NamedTuple, Optional, Sequence, TextIO, TypeVar
 from attrs import define
 
 Input = str  # The input to an NLP mode
@@ -60,5 +60,5 @@ class StatsAggregator(Generic[Aggregate], metaclass=abc.ABCMeta):
         ...
 
     @abc.abstractmethod
-    def display(self, aggregates: Sequence[Aggregate]):
+    def display(self, aggregates: Mapping[str, Aggregate]):
         ...

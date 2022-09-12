@@ -2,6 +2,7 @@ from collections import defaultdict
 from statistics import geometric_mean
 from typing import Any, Iterable, Mapping, Optional, Sequence, TextIO, TypeVar
 from attrs import define
+from countergen.plot_utils import plot_mutli_bars
 
 from countergen.types import (
     AugmentedSample,
@@ -42,8 +43,8 @@ class AveragePerformancePerCategory(StatsAggregator):
             r[c] = float(p)
         return r
 
-    def display(self, aggregates: Sequence[Mapping[Category, float]]):
-        pass
+    def display(self, aggregates: Mapping[str, Mapping[Category, float]]):
+        plot_mutli_bars(aggregates, xlabel="Model name", ylabel="Performance", title="Performance by model & category")
 
 
 @define
@@ -76,7 +77,7 @@ class AverageDifference(StatsAggregator):
         lines = file.readlines()
         return float(lines[1])
 
-    def display(self, aggregates: Sequence[float]):
+    def display(self, aggregates: Mapping[str, float]):
         pass
 
 
