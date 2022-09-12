@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import Iterable, Mapping, TypeVar
-from counterfactual_dataset_generator.agregators import AveragePerformancePerCategory
-from counterfactual_dataset_generator.config import VERBOSE
-from counterfactual_dataset_generator.data_augmentation import AugmentedDataset
-from counterfactual_dataset_generator.generative_models import get_huggingface_gpt_model_evaluator
+from countergen.agregators import AveragePerformancePerCategory
+from countergen.config import VERBOSE
+from countergen.data_augmentation import AugmentedDataset
+from countergen.generative_models import get_huggingface_gpt_model_evaluator
 
-from counterfactual_dataset_generator.types import (
+from countergen.types import (
     AugmentedSample,
     Category,
     ModelEvaluator,
@@ -13,7 +13,7 @@ from counterfactual_dataset_generator.types import (
     Results,
     StatsAgregator,
 )
-from counterfactual_dataset_generator.utils import maybe_tqdm, mean
+from countergen.utils import maybe_tqdm, mean
 
 
 T = TypeVar("T")

@@ -1,7 +1,7 @@
 # %%
 import json
 
-with open("../counterfactual_dataset_generator/data/examples/doublebind.jsonl") as f:
+with open("../countergen/data/examples/doublebind.jsonl") as f:
     data = [json.loads(line) for line in f]
 #%%
 from collections import defaultdict
@@ -13,7 +13,7 @@ transformations = [
 ]
 
 correspondance_dict = {}
-with open("../counterfactual_dataset_generator/data/converters/gender.json") as f:
+with open("../countergen/data/converters/gender.json") as f:
     corres_data = json.loads(f.read())
     categories = corres_data["categories"]
     assert len(categories) == 2
@@ -24,7 +24,9 @@ with open("../counterfactual_dataset_generator/data/converters/gender.json") as 
         return [cat for cat in categories if cat != c][0]
 
     for correspondance in corres_data["correspondances"]:
-        correspondance_t = {c: {t.__code__: list(map(t, l)) for t in transformations} for c, l in correspondance.items()}
+        correspondance_t = {
+            c: {t.__code__: list(map(t, l)) for t in transformations} for c, l in correspondance.items()
+        }
 
         for c, l in correspondance.items():
             for word in l:

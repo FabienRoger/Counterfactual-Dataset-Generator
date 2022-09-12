@@ -6,14 +6,12 @@ from typing import Any, Iterable, Literal, Mapping, NamedTuple, Optional, Sequen
 
 from attrs import define
 
-from counterfactual_dataset_generator.config import VERBOSE
-from counterfactual_dataset_generator.converter_loading import SimpleConverter
-from counterfactual_dataset_generator.types import AugmentedSample, Category, Converter, Input, Output, Variation
-from counterfactual_dataset_generator.utils import maybe_tqdm
+from countergen.config import VERBOSE
+from countergen.converter_loading import SimpleConverter
+from countergen.types import AugmentedSample, Category, Converter, Input, Output, Variation
+from countergen.utils import maybe_tqdm
 
-default_dataset_paths: Mapping[str, str] = {
-    "doublebind": "counterfactual_dataset_generator/data/examples/doublebind.jsonl"
-}
+default_dataset_paths: Mapping[str, str] = {"doublebind": "countergen/data/examples/doublebind.jsonl"}
 
 
 def augment_dataset(

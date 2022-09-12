@@ -4,8 +4,8 @@ from typing import Optional
 
 import torch
 
-from counterfactual_dataset_generator.types import Input, ModelEvaluator, Output, Performance
-from counterfactual_dataset_generator.utils import concat_dicts, perplexity, remove_last_tok
+from countergen.types import Input, ModelEvaluator, Output, Performance
+from countergen.utils import concat_dicts, perplexity, remove_last_tok
 
 metrics = ["perplexity", "probability"]
 

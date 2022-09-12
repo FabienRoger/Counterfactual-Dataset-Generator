@@ -3,7 +3,7 @@ from statistics import geometric_mean
 from typing import Iterable, Mapping, Optional, TextIO, TypeVar
 from attrs import define
 
-from counterfactual_dataset_generator.types import (
+from countergen.types import (
     AugmentedSample,
     Category,
     ModelEvaluator,
@@ -11,7 +11,7 @@ from counterfactual_dataset_generator.types import (
     Results,
     StatsAgregator,
 )
-from counterfactual_dataset_generator.utils import mean
+from countergen.utils import mean
 
 
 @define

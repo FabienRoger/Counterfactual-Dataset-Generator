@@ -7,12 +7,12 @@ from typing import Callable, DefaultDict, Iterable, Mapping, OrderedDict, Sequen
 import spacy
 from attrs import define
 
-from counterfactual_dataset_generator.types import Category, Converter, Input
-from counterfactual_dataset_generator.utils import other
+from countergen.types import Category, Converter, Input
+from countergen.utils import other
 
 default_converter_paths: Mapping[str, str] = {
-    "gender": "counterfactual_dataset_generator/data/converters/gender.json",
-    "west_v_asia": "counterfactual_dataset_generator/data/converters/west_v_asia.json",
+    "gender": "countergen/data/converters/gender.json",
+    "west_v_asia": "countergen/data/converters/west_v_asia.json",
 }
 
 

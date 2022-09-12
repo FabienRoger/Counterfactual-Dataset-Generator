@@ -2,13 +2,13 @@ from typing import Optional, Union
 
 import fire  # type: ignore
 
-from counterfactual_dataset_generator.classification_models import get_huggingface_classification_model_evaluator
-from counterfactual_dataset_generator.converter_loading import SimpleConverter, default_converter_paths
-from counterfactual_dataset_generator.data_augmentation import AugmentedDataset, augment_dataset
-from counterfactual_dataset_generator.evaluation import evaluate_and_print
-from counterfactual_dataset_generator.generative_models import get_huggingface_gpt_model_evaluator
-from counterfactual_dataset_generator.misc import overwrite_fire_help_text
-from counterfactual_dataset_generator.types import Converter
+from countergen.classification_models import get_huggingface_classification_model_evaluator
+from countergen.converter_loading import SimpleConverter, default_converter_paths
+from countergen.data_augmentation import AugmentedDataset, augment_dataset
+from countergen.evaluation import evaluate_and_print
+from countergen.generative_models import get_huggingface_gpt_model_evaluator
+from countergen.misc import overwrite_fire_help_text
+from countergen.types import Converter
 
 
 def augment(load_path: str, save_path: str, *converters: str):
@@ -24,10 +24,10 @@ def augment(load_path: str, save_path: str, *converters: str):
                   * If no converter is provided, default to 'gender'
 
     Example use:
-    - counterfactual_dataset_generator augment LOAD_PATH SAVE_PATH gender west_v_asia
-    - counterfactual_dataset_generator augment LOAD_PATH SAVE_PATH CONVERTER_PATH
-    - counterfactual_dataset_generator augment LOAD_PATH SAVE_PATH gender CONVERTER_PATH
-    - counterfactual_dataset_generator augment LOAD_PATH SAVE_PATH
+    - countergen augment LOAD_PATH SAVE_PATH gender west_v_asia
+    - countergen augment LOAD_PATH SAVE_PATH CONVERTER_PATH
+    - countergen augment LOAD_PATH SAVE_PATH gender CONVERTER_PATH
+    - countergen augment LOAD_PATH SAVE_PATH
     """
 
     if not converters:
@@ -66,11 +66,11 @@ def evaluate(
     Note: the augmented dataset should match the kind of network you evaluate! See the docs [LINK] for more info.
 
     Example use:
-    - counterfactual_dataset_generator evaluate LOAD_PATH SAVE_PATH --hf-gpt-model
+    - countergen evaluate LOAD_PATH SAVE_PATH --hf-gpt-model
       (use distillgpt2 and save the results)
-    - counterfactual_dataset_generator evaluate LOAD_PATH --hf-gpt-model gpt2-small
+    - countergen evaluate LOAD_PATH --hf-gpt-model gpt2-small
       (use gpt2-small and print the results)
-    - counterfactual_dataset_generator evaluate LOAD_PATH --hf-classifier-model
+    - countergen evaluate LOAD_PATH --hf-classifier-model
       (use cardiffnlp/twitter-roberta-base-sentiment-latest and print the results)
     """
 
@@ -109,9 +109,9 @@ if __name__ == "__main__":
             "evaluate": evaluate,
         },
     )
-    # python -m counterfactual_dataset_generator augment counterfactual_dataset_generator\data\datasets\tiny-test.jsonl counterfactual_dataset_generator\data\augdatasets\tiny-test.jsonl gender
-    # python -m counterfactual_dataset_generator augment counterfactual_dataset_generator\data\datasets\twitter-sentiment.jsonl counterfactual_dataset_generator\data\augdatasets\twitter-sentiment.jsonl gender
-    # python -m counterfactual_dataset_generator augment counterfactual_dataset_generator\data\datasets\doublebind.jsonl counterfactual_dataset_generator\data\augdatasets\doublebind.jsonl gender
-    # python -m counterfactual_dataset_generator evaluate counterfactual_dataset_generator\data\augdatasets\tiny-test.jsonl --hf_gpt_model
-    # python -m counterfactual_dataset_generator evaluate tests_saves/testtwit2.jsonl --hf_classifier_model
-    # python -m counterfactual_dataset_generator evaluate counterfactual_dataset_generator\data\augdatasets\doublebind.jsonl --hf_gpt_model
+    # python -m countergen augment countergen\data\datasets\tiny-test.jsonl countergen\data\augdatasets\tiny-test.jsonl gender
+    # python -m countergen augment countergen\data\datasets\twitter-sentiment.jsonl countergen\data\augdatasets\twitter-sentiment.jsonl gender
+    # python -m countergen augment countergen\data\datasets\doublebind.jsonl countergen\data\augdatasets\doublebind.jsonl gender
+    # python -m countergen evaluate countergen\data\augdatasets\tiny-test.jsonl --hf_gpt_model
+    # python -m countergen evaluate tests_saves/testtwit2.jsonl --hf_classifier_model
+    # python -m countergen evaluate countergen\data\augdatasets\doublebind.jsonl --hf_gpt_model

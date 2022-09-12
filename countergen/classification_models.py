@@ -1,6 +1,6 @@
 from typing import Optional
-from counterfactual_dataset_generator.config import VERBOSE
-from counterfactual_dataset_generator.types import Input, ModelEvaluator, Output, Performance
+from countergen.config import VERBOSE
+from countergen.types import Input, ModelEvaluator, Output, Performance
 
 
 def get_huggingface_classification_model_evaluator(
