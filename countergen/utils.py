@@ -1,9 +1,12 @@
 import os
 from math import exp, log2
+from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, TypeVar
 
 import torch
 from tqdm import tqdm  # type: ignore
+
+MODULE_PATH = str(Path(__file__).parent)
 
 T = TypeVar("T")
 

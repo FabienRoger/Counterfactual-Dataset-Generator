@@ -3,12 +3,10 @@ from math import exp
 from typing import TYPE_CHECKING, Optional
 
 import torch
+from transformers import BatchEncoding
 
 from countergen.types import Input, ModelEvaluator, Output, Performance
 from countergen.utils import concat_dicts, perplexity, remove_last_tok, unwrap_or
-
-if TYPE_CHECKING:
-    from transformers import BatchEncoding
 
 metrics = ["perplexity", "probability"]
 
