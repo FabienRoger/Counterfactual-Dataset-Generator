@@ -1,6 +1,6 @@
 from collections import defaultdict
 from statistics import geometric_mean
-from typing import Any, Iterable, Mapping, Optional, TextIO, TypeVar
+from typing import Any, Iterable, Mapping, Optional, Sequence, TextIO, TypeVar
 from attrs import define
 
 from countergen.types import (
@@ -9,13 +9,13 @@ from countergen.types import (
     ModelEvaluator,
     Performance,
     Results,
-    StatsAgregator,
+    StatsAggregator,
 )
 from countergen.utils import mean
 
 
 @define
-class AveragePerformancePerCategory(StatsAgregator):
+class AveragePerformancePerCategory(StatsAggregator):
     use_geometric_mean: bool = False
 
     def __call__(self, performances: Results) -> Mapping[Category, float]:
@@ -29,16 +29,25 @@ class AveragePerformancePerCategory(StatsAgregator):
         avg_performances_per_category = {c: mean_(perfs) for c, perfs in performances_per_category.items()}
         return avg_performances_per_category
 
-    def save_agregation(self, performances: Results, file: Optional[TextIO] = None):
-        r = self(performances)
-
+    def save_aggregation(self, aggregate: Mapping[Category, float], file: Optional[TextIO] = None):
         print("Average performance per category:", file=file)
-        for c, perf in r.items():
+        for c, perf in aggregate.items():
             print(f"{c}: {perf:.6f}", file=file)
+
+    def load_aggregation(self, file: TextIO) -> Mapping[Category, float]:
+        lines = file.readlines()
+        r = {}
+        for l in lines[1:]:
+            c, p = l.split(": ")
+            r[c] = float(p)
+        return r
+
+    def display(self, aggregates: Sequence[Mapping[Category, float]]):
+        pass
 
 
 @define
-class AverageDifference(StatsAgregator):
+class AverageDifference(StatsAggregator):
     positive_category: Category
     negative_category: Category
     relative_difference: bool = False
@@ -55,24 +64,38 @@ class AverageDifference(StatsAgregator):
                 differences.append(diff)
         return mean(differences)
 
-    def save_agregation(self, performances: Results, file: Optional[TextIO] = None):
-        r = self(performances)
-
+    def save_aggregation(self, aggregate: float, file: Optional[TextIO] = None):
         relative = "relative " if self.relative_difference else ""
         print(
             f"The {relative}performance between category {self.positive_category} and category {self.negative_category}:",
             file=file,
         )
-        print(f"{r:.6f}", file=file)
+        print(f"{aggregate:.6f}", file=file)
+
+    def load_aggregation(self, file: TextIO) -> float:
+        lines = file.readlines()
+        return float(lines[1])
+
+    def display(self, aggregates: Sequence[float]):
+        pass
 
 
-@define
-class MultipleStatsAgregator(StatsAgregator):
-    agregators: list[StatsAgregator]
+# DOESN'T WORK EASILY because you have to split the file.
 
-    def __call__(self, performances: Results) -> list[Any]:
-        return [ag(performances) for ag in self.agregators]
+# @define
+# class MultipleStatsAggregator(StatsAggregator):
+#     aggregators: list[StatsAggregator]
 
-    def save_agregation(self, performances: Results, file: Optional[TextIO] = None):
-        for ag in self.agregators:
-            ag.save_agregation(performances, file)
+#     def __call__(self, performances: Results) -> list[Any]:
+#         return [ag(performances) for ag in self.aggregators]
+
+#     def save_aggregation(self, aggregate: list[Any], file: Optional[TextIO] = None):
+#         for ag in self.aggregators:
+#             ag.save_aggregation(aggregate, file)
+
+#     def load_aggregation(self, file: TextIO) -> list[Any]:
+#         return [ag.load_aggregation(file) for ag in self.aggregators]
+
+#     def display(self, aggregates: Sequence[list[Any]]):
+#         for ag in self.aggregators:
+#             ag.display(aggregates)

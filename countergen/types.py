@@ -43,14 +43,22 @@ class AugmentedSample(metaclass=abc.ABCMeta):
 SampleResults = Iterable[tuple[Performance, tuple[Category, ...]]]
 Results = Iterable[SampleResults]
 
-T = TypeVar("T")
+Aggregate = TypeVar("Aggregate")
 
 
-class StatsAgregator(Generic[T], metaclass=abc.ABCMeta):
+class StatsAggregator(Generic[Aggregate], metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def __call__(self, performances: Results) -> T:
+    def __call__(self, performances: Results) -> Aggregate:
         ...
 
     @abc.abstractmethod
-    def save_agregation(self, performances: Results, file: Optional[TextIO] = None):
+    def save_aggregation(self, aggregate: Aggregate, file: Optional[TextIO] = None):
+        ...
+
+    @abc.abstractmethod
+    def load_aggregation(self, file: TextIO) -> Aggregate:
+        ...
+
+    @abc.abstractmethod
+    def display(self, aggregates: Sequence[Aggregate]):
         ...

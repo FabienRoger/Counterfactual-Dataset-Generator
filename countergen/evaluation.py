@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import Iterable, Mapping, TypeVar
-from countergen.agregators import AveragePerformancePerCategory
+from countergen.aggregators import AveragePerformancePerCategory
 from countergen.config import VERBOSE
 from countergen.data_augmentation import AugmentedDataset
 from countergen.generative_models import get_huggingface_gpt_model_evaluator
@@ -11,7 +11,7 @@ from countergen.types import (
     ModelEvaluator,
     Performance,
     Results,
-    StatsAgregator,
+    StatsAggregator,
 )
 from countergen.utils import maybe_tqdm, mean
 
@@ -33,24 +33,28 @@ def compute_performances(samples: Iterable[AugmentedSample], model: ModelEvaluat
 def evaluate(
     samples: Iterable[AugmentedSample],
     model: ModelEvaluator,
-    agregator: StatsAgregator[T] = AveragePerformancePerCategory(),
+    aggregator: StatsAggregator[T] = AveragePerformancePerCategory(),
 ) -> T:
-    return agregator(compute_performances(samples, model))
+    return aggregator(compute_performances(samples, model))
 
 
 def evaluate_and_print(
     samples: Iterable[AugmentedSample],
     model: ModelEvaluator,
-    agregator: StatsAgregator[T] = AveragePerformancePerCategory(),
+    aggregator: StatsAggregator[T] = AveragePerformancePerCategory(),
 ):
-    agregator.save_agregation(compute_performances(samples, model))
+    aggregator.save_aggregation(evaluate(samples, model, aggregator))
 
 
 def evaluate_and_save(
     samples: Iterable[AugmentedSample],
     model: ModelEvaluator,
     path: str,
-    agregator: StatsAgregator[T] = AveragePerformancePerCategory(),
+    aggregator: StatsAggregator[T] = AveragePerformancePerCategory(),
+    also_print: bool = True,
 ):
     with Path(path).open("w", encoding="utf-8") as f:
-        agregator.save_agregation(compute_performances(samples, model), file=f)
+        perfs = evaluate(samples, model, aggregator)
+        aggregator.save_aggregation(perfs, file=f)
+        if also_print:
+            aggregator.save_aggregation(perfs)
