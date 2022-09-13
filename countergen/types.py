@@ -20,10 +20,10 @@ Output = List[str]  # The different acceptable outputs of the NLP, string label 
 Performance = float  # usually between zero & one (one is better)
 ModelEvaluator = Callable[[Input, Output], Performance]
 
-Category = str  # The different kinds of data produced by converters
+Category = str  # The different kinds of data produced by augmenters
 
 
-class Converter(metaclass=abc.ABCMeta):
+class Augmenter(metaclass=abc.ABCMeta):
     @abc.abstractproperty
     def categories(self) -> Tuple[Category, Category]:
         ...

@@ -3,24 +3,24 @@ from typing import List, Optional, Union
 import fire  # type: ignore
 
 from countergen.classification_models import get_huggingface_classification_model_evaluator
-from countergen.converter_loading import SimpleConverter, default_converter_paths
+from countergen.augmenter_loading import SimpleAugmenter, default_converter_paths
 from countergen.data_augmentation import AugmentedDataset, augment_dataset
 from countergen.evaluation import evaluate_and_print
 from countergen.generative_models import get_huggingface_gpt_model_evaluator
 from countergen.misc import overwrite_fire_help_text
-from countergen.types import Converter
+from countergen.types import Augmenter
 
 
-def augment(load_path: str, save_path: str, *converters: str):
+def augment(load_path: str, save_path: str, *augmenters: str):
     """Add counterfactuals to the dataset and save it elsewhere.
 
     Args
     - load-path: the path of the dataset to augment
     - save-path: the path where the augmenter dataset will be save
-    - converters: a list of ways of converting a string to another string.
+    - augmenters: a list of ways of converting a string to another string.
                   * If it ends with a .json, assumes it's a the path to a file containing
                   instructions to build a converter. See the docs [LINK] for more info.
-                  * Otherwise, assume it is one of the default converters: either 'gender' or 'west_v_asia
+                  * Otherwise, assume it is one of the default augmenters: either 'gender' or 'west_v_asia
                   * If no converter is provided, default to 'gender'
 
     Example use:
@@ -30,15 +30,15 @@ def augment(load_path: str, save_path: str, *converters: str):
     - countergen augment LOAD_PATH SAVE_PATH
     """
 
-    if not converters:
-        converters = ("gender",)
+    if not augmenters:
+        augmenters = ("gender",)
 
-    converters_objs: List[Converter] = []
-    for c_str in converters:
+    converters_objs: List[Augmenter] = []
+    for c_str in augmenters:
         if c_str.endswith(".json"):
-            converter = SimpleConverter.from_json(c_str)
+            converter = SimpleAugmenter.from_json(c_str)
         elif c_str in default_converter_paths:
-            converter = SimpleConverter.from_default(c_str)
+            converter = SimpleAugmenter.from_default(c_str)
         else:
             print(f"{c_str} is not a valid converter name.")
             return

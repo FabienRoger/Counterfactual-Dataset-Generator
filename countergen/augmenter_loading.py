@@ -7,7 +7,7 @@ from typing import Callable, DefaultDict, Dict, Iterable, List, Mapping, Ordered
 import spacy
 from attrs import define
 
-from countergen.types import Category, Converter, Input
+from countergen.types import Category, Augmenter, Input
 from countergen.utils import MODULE_PATH, other
 
 default_converter_paths: Mapping[str, str] = {
@@ -17,7 +17,7 @@ default_converter_paths: Mapping[str, str] = {
 
 
 @define
-class ConverterDataset:
+class ConversionDataset:
     categories: Tuple[Category, Category]
     correspondances: List[Tuple[List[str], List[str]]]
 
@@ -29,7 +29,7 @@ class ConverterDataset:
         correspondances = []
         for m in correspondances_maps:
             correspondances.append((m[cat_0], m[cat_1]))
-        return ConverterDataset(categories, correspondances)  # type: ignore
+        return ConversionDataset(categories, correspondances)  # type: ignore
 
 
 Transformation = Callable[[str], str]
@@ -42,14 +42,14 @@ DEFAULT_TRANSFORMATIONS = [
 
 
 @define
-class SimpleConverter(Converter):
+class SimpleAugmenter(Augmenter):
     categories: Tuple[Category, Category]
     correspondance_dict: CorrespondanceDict
     nlp: spacy.language.Language = spacy.load("en_core_web_sm")
 
     @classmethod
     def from_default(cls, name: str = "gender"):
-        return SimpleConverter.from_json(default_converter_paths[name])
+        return SimpleAugmenter.from_json(default_converter_paths[name])
 
     @classmethod
     def from_json(
@@ -59,12 +59,12 @@ class SimpleConverter(Converter):
     ):
         with Path(path).open("r", encoding="utf-8") as f:
             json_dict = json.loads(f.read())
-            return SimpleConverter.from_ds(ConverterDataset.from_json(json_dict), transformations)
+            return SimpleAugmenter.from_ds(ConversionDataset.from_json(json_dict), transformations)
 
     @classmethod
     def from_ds(
         cls,
-        ds: ConverterDataset,
+        ds: ConversionDataset,
         transformations: Iterable[Transformation] = DEFAULT_TRANSFORMATIONS,
     ):
         correspondance_dict: CorrespondanceDict = {}
@@ -81,7 +81,7 @@ class SimpleConverter(Converter):
                     for t in transformations:
                         correspondance_dict[c][t(word)] += correspondance_t[other(ds.categories, c)][t.__code__]
 
-        return SimpleConverter(ds.categories, correspondance_dict)
+        return SimpleAugmenter(ds.categories, correspondance_dict)
 
     def convert_to(self, inp: Input, to: Category) -> Input:
         from_category = other(self.categories, to)

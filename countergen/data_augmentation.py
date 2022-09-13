@@ -7,8 +7,8 @@ from typing import Any, Iterable, List, Mapping, NamedTuple, Optional, Sequence,
 from attrs import define
 
 from countergen.config import VERBOSE
-from countergen.converter_loading import SimpleConverter
-from countergen.types import AugmentedSample, Category, Converter, Input, Output, Variation
+from countergen.augmenter_loading import SimpleAugmenter
+from countergen.types import AugmentedSample, Category, Augmenter, Input, Output, Variation
 from countergen.utils import MODULE_PATH, maybe_tqdm
 
 default_dataset_paths: Mapping[str, str] = {"doublebind": f"{MODULE_PATH}/data/examples/doublebind.jsonl"}
@@ -17,10 +17,10 @@ default_dataset_paths: Mapping[str, str] = {"doublebind": f"{MODULE_PATH}/data/e
 def augment_dataset(
     dataset_path: str,
     save_path: str = ".",
-    converters: Iterable[Union[str, Converter]] = ["gender"],
+    augmenters: Iterable[Union[str, Augmenter]] = ["gender"],
 ):
     converters_ = [
-        SimpleConverter.from_default(converter) if isinstance(converter, str) else converter for converter in converters
+        SimpleAugmenter.from_default(converter) if isinstance(converter, str) else converter for converter in augmenters
     ]
     ds = Dataset.from_jsonl(dataset_path)
     aug_ds = generate_all_variations(converters_, ds)
@@ -103,7 +103,7 @@ class AugmentedDataset:
         return AugmentedDataset(samples)
 
 
-def generate_variations_pair(converter: Converter, ds: Dataset) -> AugmentedDataset:
+def generate_variations_pair(converter: Augmenter, ds: Dataset) -> AugmentedDataset:
     augmented_samples = []
     for sample in maybe_tqdm(ds.samples, VERBOSE >= 2):
         variations = [
@@ -113,11 +113,11 @@ def generate_variations_pair(converter: Converter, ds: Dataset) -> AugmentedData
     return AugmentedDataset(augmented_samples)
 
 
-def generate_all_variations(converters: Iterable[Converter], ds: Dataset) -> AugmentedDataset:
+def generate_all_variations(augmenters: Iterable[Augmenter], ds: Dataset) -> AugmentedDataset:
     augmented_samples = []
     for sample in maybe_tqdm(ds.samples, VERBOSE >= 2):
         variations = [Variation(sample.input, ())]
-        for converter in converters:
+        for converter in augmenters:
             new_variations = []
             for category in converter.categories:
                 new_variations += [
