@@ -11,7 +11,11 @@ from countergen.augmenter_loading import SimpleAugmenter
 from countergen.types import AugmentedSample, Category, Augmenter, Input, Output, Variation
 from countergen.utils import MODULE_PATH, maybe_tqdm
 
-default_dataset_paths: Mapping[str, str] = {"doublebind": f"{MODULE_PATH}/data/examples/doublebind.jsonl"}
+default_dataset_paths: Mapping[str, str] = {
+    "doublebind": f"{MODULE_PATH}/data/datasets/doublebind.jsonl",
+    "tiny-test": f"{MODULE_PATH}/data/datasets/tiny-test.jsonl",
+    "twitter-sentiment": f"{MODULE_PATH}/data/datasets/twitter-sentiment.jsonl",
+}
 
 
 def augment_dataset(
