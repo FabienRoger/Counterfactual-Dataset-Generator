@@ -6,3 +6,5 @@ torch>=1.11.0
 tqdm>=4.62.3
 transformers>=4.16.2
 matplotlib>=3.5.3
+jupyter>=1.0.0
+ipywidgets>=8.0.2

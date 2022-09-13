@@ -6,6 +6,7 @@ To install, run
 
 ```console
 pip install countergen
+python -m spacy download en
 ```
 
 To see the available commands, run
