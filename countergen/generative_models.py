@@ -1,6 +1,6 @@
 from functools import lru_cache
 from math import exp
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 import torch
 from transformers import BatchEncoding
@@ -51,15 +51,15 @@ def get_huggingface_gpt_model_evaluator(
 
 
 def get_correct_logprobs(
-    tokens_inp: BatchEncoding, token_outs: list[BatchEncoding], model: torch.nn.Module
-) -> list[torch.Tensor]:
+    tokens_inp: BatchEncoding, token_outs: List[BatchEncoding], model: torch.nn.Module
+) -> List[torch.Tensor]:
 
     if all([o["input_ids"].shape[-1] == 1 for o in token_outs]):
         return get_correct_1tok_logprobs(tokens_inp, token_outs, model)
 
     inp_length = tokens_inp["input_ids"].shape[-1]
 
-    result: list[torch.Tensor] = []
+    result: List[torch.Tensor] = []
 
     for tokens_out in token_outs:
         out_length = tokens_out["input_ids"].shape[-1]
@@ -79,8 +79,8 @@ def get_correct_logprobs(
 
 
 def get_correct_1tok_logprobs(
-    tokens_inp: BatchEncoding, token_outs: list[BatchEncoding], model: torch.nn.Module
-) -> list[torch.Tensor]:
+    tokens_inp: BatchEncoding, token_outs: List[BatchEncoding], model: torch.nn.Module
+) -> List[torch.Tensor]:
 
     with torch.no_grad():
         logits = model(**tokens_inp).logits[0].to("cpu")

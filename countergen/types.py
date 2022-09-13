@@ -1,9 +1,21 @@
 import abc
-from typing import Any, Callable, Generic, Iterable, Mapping, NamedTuple, Optional, Sequence, TextIO, TypeVar
+from typing import (
+    Callable,
+    Generic,
+    Iterable,
+    Mapping,
+    NamedTuple,
+    Optional,
+    Sequence,
+    TextIO,
+    TypeVar,
+    List,
+    Tuple,
+)
 from attrs import define
 
 Input = str  # The input to an NLP mode
-Output = list[str]  # The different acceptable outputs of the NLP, string label or number, but in string format
+Output = List[str]  # The different acceptable outputs of the NLP, string label or number, but in string format
 
 Performance = float  # usually between zero & one (one is better)
 ModelEvaluator = Callable[[Input, Output], Performance]
@@ -13,7 +25,7 @@ Category = str  # The different kinds of data produced by converters
 
 class Converter(metaclass=abc.ABCMeta):
     @abc.abstractproperty
-    def categories(self) -> tuple[Category, Category]:
+    def categories(self) -> Tuple[Category, Category]:
         ...
 
     @abc.abstractmethod
@@ -23,7 +35,7 @@ class Converter(metaclass=abc.ABCMeta):
 
 class Variation(NamedTuple):
     text: Input
-    categories: tuple[Category, ...]
+    categories: Tuple[Category, ...]
 
 
 class AugmentedSample(metaclass=abc.ABCMeta):
@@ -40,7 +52,7 @@ class AugmentedSample(metaclass=abc.ABCMeta):
         ...
 
 
-SampleResults = Iterable[tuple[Performance, tuple[Category, ...]]]
+SampleResults = Iterable[Tuple[Performance, Tuple[Category, ...]]]
 Results = Iterable[SampleResults]
 
 Aggregate = TypeVar("Aggregate")

@@ -20,10 +20,10 @@ def get_huggingface_classification_model_evaluator(
 
         pred = sentiment_task(inp)[0]
         if "label" not in pred:
-            raise ValueError(f"pipeline shoud ouput a dict containing a label field but {pred=}")
+            raise ValueError(f"pipeline shoud ouput a dict containing a label field but pred={pred}")
         perf = 1.0 if true_label == pred["label"] else 0.0
         if VERBOSE >= 4:
-            print(f"{inp=} {true_label=} {pred=} {perf=}")
+            print(f"inp={inp} true_label={true_label} pred={pred} perf={perf}")
         return perf
 
     return run

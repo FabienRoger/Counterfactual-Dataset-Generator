@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 import fire  # type: ignore
 
@@ -33,7 +33,7 @@ def augment(load_path: str, save_path: str, *converters: str):
     if not converters:
         converters = ("gender",)
 
-    converters_objs: list[Converter] = []
+    converters_objs: List[Converter] = []
     for c_str in converters:
         if c_str.endswith(".json"):
             converter = SimpleConverter.from_json(c_str)

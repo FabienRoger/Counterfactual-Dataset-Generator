@@ -1,7 +1,7 @@
 import os
 from math import exp, log2
 from pathlib import Path
-from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, TypeVar
+from typing import Any, Callable, Dict, Iterable, Mapping, Optional, Sequence, TypeVar, Tuple
 
 import torch
 from tqdm import tqdm  # type: ignore
@@ -11,7 +11,7 @@ MODULE_PATH = str(Path(__file__).parent)
 T = TypeVar("T")
 
 
-def other(t: tuple[T, T], x: T) -> T:
+def other(t: Tuple[T, T], x: T) -> T:
     if x == t[0]:
         if x == t[1]:
             raise ValueError(f"{t} contains two copies of {x}")
@@ -38,7 +38,7 @@ def perplexity(log_probs: Sequence[float]):
     return exp(mean(log_probs))
 
 
-def concat_dicts(dicts: Sequence[Mapping[Any, torch.Tensor]]) -> dict[Any, torch.Tensor]:
+def concat_dicts(dicts: Sequence[Mapping[Any, torch.Tensor]]) -> Dict[Any, torch.Tensor]:
     if not dicts:
         raise ValueError("dicts is empty")
     keys = dicts[0].keys()
@@ -48,7 +48,7 @@ def concat_dicts(dicts: Sequence[Mapping[Any, torch.Tensor]]) -> dict[Any, torch
     return {k: torch.cat([d[k] for d in dicts], dim=-1) for k in keys}
 
 
-def remove_last_tok(d: Mapping[Any, torch.Tensor]) -> dict[Any, torch.Tensor]:
+def remove_last_tok(d: Mapping[Any, torch.Tensor]) -> Dict[Any, torch.Tensor]:
     return {k: t[:, :-1] for k, t in d.items()}
 
 

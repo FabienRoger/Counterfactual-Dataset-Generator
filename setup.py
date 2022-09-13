@@ -1,6 +1,10 @@
 import pathlib
 from setuptools import setup
 
+# To upload the package, run
+# python setup.py sdist
+# twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
+
 HERE = pathlib.Path(__file__).parent  # The directory containing this file
 README = (HERE / "README.md").read_text()
 
@@ -18,5 +22,5 @@ setup(
         "Operating System :: OS Independent",
     ],
     url="https://github.com/FabienRoger/Counterfactual-Dataset-Generator",
-    python_requires=">=3.9",
+    python_requires=">=3.7",
 )

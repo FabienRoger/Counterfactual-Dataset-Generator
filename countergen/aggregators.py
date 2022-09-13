@@ -1,6 +1,5 @@
 from collections import defaultdict
-from statistics import geometric_mean
-from typing import Any, Iterable, Mapping, Optional, Sequence, TextIO, TypeVar
+from typing import Any, DefaultDict, Iterable, List, Mapping, Optional, Sequence, TextIO, TypeVar
 from attrs import define
 from countergen.plot_utils import plot_mutli_bars
 
@@ -12,7 +11,7 @@ from countergen.types import (
     Results,
     StatsAggregator,
 )
-from countergen.utils import mean
+from countergen.utils import geometric_mean, mean
 
 
 @define
@@ -20,7 +19,7 @@ class AveragePerformancePerCategory(StatsAggregator):
     use_geometric_mean: bool = False
 
     def __call__(self, performances: Results) -> Mapping[Category, float]:
-        performances_per_category: defaultdict[Category, list[float]] = defaultdict(lambda: [])
+        performances_per_category: DefaultDict[Category, List[float]] = defaultdict(lambda: [])
         for sample_perfs in performances:
             for perf, categories in sample_perfs:
                 for c in categories:

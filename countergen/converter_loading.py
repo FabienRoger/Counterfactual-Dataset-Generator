@@ -2,7 +2,7 @@ import json
 from collections import defaultdict
 from pathlib import Path
 from random import choice
-from typing import Callable, DefaultDict, Iterable, Mapping, OrderedDict, Sequence
+from typing import Callable, DefaultDict, Dict, Iterable, List, Mapping, OrderedDict, Sequence, Tuple
 
 import spacy
 from attrs import define
@@ -18,8 +18,8 @@ default_converter_paths: Mapping[str, str] = {
 
 @define
 class ConverterDataset:
-    categories: tuple[Category, Category]
-    correspondances: list[tuple[list[str], list[str]]]
+    categories: Tuple[Category, Category]
+    correspondances: List[Tuple[List[str], List[str]]]
 
     @classmethod
     def from_json(cls, json_dict: OrderedDict):
@@ -33,7 +33,7 @@ class ConverterDataset:
 
 
 Transformation = Callable[[str], str]
-CorrespondanceDict = dict[Category, DefaultDict[str, list[str]]]
+CorrespondanceDict = Dict[Category, DefaultDict[str, List[str]]]
 DEFAULT_TRANSFORMATIONS = [
     lambda s: s.lower(),
     lambda s: s.upper(),
@@ -43,7 +43,7 @@ DEFAULT_TRANSFORMATIONS = [
 
 @define
 class SimpleConverter(Converter):
-    categories: tuple[Category, Category]
+    categories: Tuple[Category, Category]
     correspondance_dict: CorrespondanceDict
     nlp: spacy.language.Language = spacy.load("en_core_web_sm")
 

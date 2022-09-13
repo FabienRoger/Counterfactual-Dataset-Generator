@@ -2,7 +2,7 @@ import json
 from ast import Or
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Iterable, Literal, Mapping, NamedTuple, Optional, Sequence, Union
+from typing import Any, Iterable, List, Mapping, NamedTuple, Optional, Sequence, Union
 
 from attrs import define
 
@@ -40,7 +40,7 @@ class Sample:
 
 @define
 class SampleWithVariations(Sample, AugmentedSample):
-    variations: list[Variation] = []
+    variations: List[Variation] = []
 
     def get_variations(self) -> Sequence[Variation]:
         return self.variations
@@ -49,7 +49,7 @@ class SampleWithVariations(Sample, AugmentedSample):
         return self.expected_output
 
     @classmethod
-    def from_sample(cls, s: Sample, variations: list[Variation] = []):
+    def from_sample(cls, s: Sample, variations: List[Variation] = []):
         return SampleWithVariations(s.input, s.expected_output, variations)
 
     @classmethod
@@ -67,7 +67,7 @@ class SampleWithVariations(Sample, AugmentedSample):
 
 @define
 class Dataset:
-    samples: list[Sample]
+    samples: List[Sample]
 
     @classmethod
     def from_default(cls, name: str = "doublebind"):
@@ -85,7 +85,7 @@ class Dataset:
 
 @define
 class AugmentedDataset:
-    samples: list[SampleWithVariations]
+    samples: List[SampleWithVariations]
 
     def save_to_jsonl(self, path: str):
         with Path(path).open("w", encoding="utf-8") as f:
