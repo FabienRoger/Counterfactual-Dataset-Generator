@@ -2,3 +2,5 @@ mypy
 black
 twine
 sklearn
+jupyter>=1.0.0
+ipywidgets>=8.0.2
