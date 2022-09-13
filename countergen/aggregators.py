@@ -1,16 +1,11 @@
 from collections import defaultdict
 from typing import Any, DefaultDict, Iterable, List, Mapping, Optional, Sequence, TextIO, TypeVar
-from attrs import define
-from countergen.plot_utils import plot_mutli_bars
 
-from countergen.types import (
-    AugmentedSample,
-    Category,
-    ModelEvaluator,
-    Performance,
-    Results,
-    StatsAggregator,
-)
+import numpy as np
+from attrs import define
+
+from countergen.plot_utils import plot_mutli_bars
+from countergen.types import AugmentedSample, Category, ModelEvaluator, Performance, Results, StatsAggregator
 from countergen.utils import geometric_mean, mean
 
 
@@ -44,6 +39,55 @@ class AveragePerformancePerCategory(StatsAggregator):
 
     def display(self, aggregates: Mapping[str, Mapping[Category, float]]):
         plot_mutli_bars(aggregates, xlabel="Model name", ylabel="Performance", title="Performance by model & category")
+
+
+@define
+class Stats:
+    mean: float
+    uncertainty_2sig: float
+
+    @classmethod
+    def from_seq(cls, s: Sequence[float]):
+        assert s, "empty seq"
+        a = np.array(s)
+        uncertainty_2sig = 2 * a.std() / np.sqrt(len(s))
+        return Stats(mean=a.mean(), uncertainty_2sig=uncertainty_2sig)
+
+
+@define
+class PerformanceStatsPerCategory(StatsAggregator):
+    """Compute mean and uncertainty over mean."""
+
+    def __call__(self, performances: Results) -> Mapping[Category, Stats]:
+        performances_per_category: DefaultDict[Category, List[Stats]] = defaultdict(lambda: [])
+        for sample_perfs in performances:
+            for perf, categories in sample_perfs:
+                for c in categories:
+                    performances_per_category[c].append(perf)
+
+        aggregate = {c: Stats.from_seq(perfs) for c, perfs in performances_per_category.items()}
+        return aggregate
+
+    def save_aggregation(self, aggregate: Mapping[Category, Stats], file: Optional[TextIO] = None):
+        print("Average performance per category:", file=file)
+        for c, perf in aggregate.items():
+            print(f"{c}: {perf.mean:.6f} +- {perf.uncertainty_2sig:.6f}", file=file)
+
+    def load_aggregation(self, file: TextIO) -> Mapping[Category, Stats]:
+        lines = file.readlines()
+        r = {}
+        for l in lines[1:]:
+            c, p = l.split(": ")
+            m, u = p.split(" +- ")
+            r[c] = Stats(m, u)
+        return r
+
+    def display(self, aggregates: Mapping[str, Mapping[Category, Stats]]):
+        means = {n: {c: s.mean for c, s in d.items()} for n, d in aggregates.items()}
+        errs = {n: {c: s.uncertainty_2sig for c, s in d.items()} for n, d in aggregates.items()}
+        plot_mutli_bars(
+            means, xlabel="Model name", ylabel="Performance", title="Performance by model & category", err_by_type_by_cat=errs
+        )
 
 
 @define
