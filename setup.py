@@ -27,7 +27,6 @@ setup(
     ],
     url="https://github.com/FabienRoger/Counterfactual-Dataset-Generator",
     python_requires=">=3.7",
-    # package_data={"": ["VERSION", "requirements.txt"]},
     include_package_data=True,
     install_requires=REQUIREMENTS,
     entry_points={
