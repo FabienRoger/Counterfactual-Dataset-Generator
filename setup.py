@@ -1,16 +1,19 @@
 import pathlib
 from setuptools import setup
 
-# To upload the package, run
-# python setup.py sdist
-# twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
+"""
+To upload the package, run
+python setup.py sdist
+twine upload --repository-url https://upload.pypi.org/legacy/ dist/countergen-VERSION.tar.gz
+"""
 
 HERE = pathlib.Path(__file__).parent  # The directory containing this file
 README = (HERE / "README.md").read_text()
+VERSION = (HERE / "VERSION").read_text()
 
 setup(
     name="countergen",
-    version="0.1.2",
+    version=VERSION,
     description="A counterfactual dataset generator to evaluate language model.",
     long_description=README,
     long_description_content_type="text/markdown",
