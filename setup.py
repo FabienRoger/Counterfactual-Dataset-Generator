@@ -9,11 +9,10 @@ twine upload --repository-url https://upload.pypi.org/legacy/ dist/countergen-VE
 
 HERE = pathlib.Path(__file__).parent  # The directory containing this file
 README = (HERE / "README.md").read_text()
-VERSION = (HERE / "VERSION").read_text()
 
 setup(
     name="countergen",
-    version=VERSION,
+    version="0.1.6",
     description="A counterfactual dataset generator to evaluate language model.",
     long_description=README,
     long_description_content_type="text/markdown",
