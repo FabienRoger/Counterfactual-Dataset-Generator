@@ -3,22 +3,15 @@ from math import exp
 from typing import TYPE_CHECKING, List, Optional
 
 import torch
-from transformers import BatchEncoding
+from transformers import GPT2LMHeadModel, GPT2Tokenizer, BatchEncoding
 
 from countergen.types import Input, ModelEvaluator, Output, Performance
-from countergen.utils import concat_dicts, perplexity, remove_last_tok, unwrap_or
+from countergen.utils import concat_dicts, get_device, perplexity, remove_last_tok, unwrap_or
 
 metrics = ["perplexity", "probability"]
 
 
-def get_huggingface_gpt_model_evaluator(
-    model_name: str = "distilgpt2", device: Optional[str] = None, metric: str = "probability"
-) -> ModelEvaluator:
-    from transformers import GPT2LMHeadModel, GPT2Tokenizer
-
-    device = unwrap_or(device, "cuda:0" if torch.cuda.is_available() else "cpu")
-
-    model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
+def get_evaluator_for_hf_model(model: GPT2LMHeadModel, device: str, metric: str = "probability") -> ModelEvaluator:
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 
     def run(inp: Input, out: Output) -> Performance:
@@ -48,6 +41,14 @@ def get_huggingface_gpt_model_evaluator(
         raise ValueError(f"{metric} is not a valid metric. Choose one in {metrics}.")
 
     return run
+
+
+def get_huggingface_gpt_model_evaluator(
+    model_name: str = "distilgpt2", device: Optional[str] = None, metric: str = "probability"
+) -> ModelEvaluator:
+    device = unwrap_or(device, get_device())
+    model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
+    return get_evaluator_for_hf_model(model, device, metric)
 
 
 def get_correct_logprobs(
