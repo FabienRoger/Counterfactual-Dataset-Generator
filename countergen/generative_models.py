@@ -11,7 +11,10 @@ from countergen.utils import concat_dicts, get_device, perplexity, remove_last_t
 metrics = ["perplexity", "probability"]
 
 
-def get_evaluator_for_hf_model(model: GPT2LMHeadModel, device: str, metric: str = "probability") -> ModelEvaluator:
+def get_evaluator_for_model(model: torch.nn.Module, metric: str = "probability") -> ModelEvaluator:
+    """Return the ModelEvaluator corresponding to the model & the metric.
+
+    The model should take {"input_ids": [tensor], "attention_mask": [tensor]} as input."""
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 
     def run(inp: Input, out: Output) -> Performance:
@@ -47,8 +50,8 @@ def get_huggingface_gpt_model_evaluator(
     model_name: str = "distilgpt2", device: Optional[str] = None, metric: str = "probability"
 ) -> ModelEvaluator:
     device = unwrap_or(device, get_device())
-    model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
-    return get_evaluator_for_hf_model(model, device, metric)
+    model: torch.nn.Module = GPT2LMHeadModel.from_pretrained(model_name).to(device)
+    return get_evaluator_for_model(model, metric)
 
 
 def get_correct_logprobs(
