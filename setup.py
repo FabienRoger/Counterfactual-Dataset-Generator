@@ -26,4 +26,9 @@ setup(
     ],
     url="https://github.com/FabienRoger/Counterfactual-Dataset-Generator",
     python_requires=">=3.7",
+    entry_points={
+        "console_scripts": [
+            "countergen = countergen:run",
+        ],
+    },
 )

@@ -1,4 +1,4 @@
-def overwrite_fire_help_text():  # type: ignore
+def _overwrite_fire_help_text():  # type: ignore
     import inspect
     import fire  # type: ignore
     from fire import inspectutils  # type: ignore
