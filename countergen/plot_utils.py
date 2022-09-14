@@ -1,5 +1,5 @@
 from typing import Mapping, Optional
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # type: ignore
 import numpy as np
 
 TypeName = str

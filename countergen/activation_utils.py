@@ -54,9 +54,9 @@ Operation = Callable[[torch.Tensor], torch.Tensor]
 
 def get_activations(
     tokens: BatchEncoding, model: nn.Module, layers: Iterable[nn.Module], operation: Operation = lambda x: x
-) -> BatchEncoding:
+) -> Dict[nn.Module, BatchEncoding]:
     handles = []
-    activations = {}
+    activations: Dict[nn.Module, BatchEncoding] = {}
 
     def hook_fn(module, inp, out):
         activations[module] = operation(out[0].detach())
