@@ -125,7 +125,7 @@ class AverageDifference(StatsAggregator):
         return float(lines[1])
 
     def display(self, aggregates: Mapping[str, float]):
-        pass
+        raise NotImplementedError()
 
 
 # DOESN'T WORK EASILY because you have to split the file.
