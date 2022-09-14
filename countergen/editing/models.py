@@ -3,7 +3,7 @@ import torch
 from torch import nn
 import numpy as np
 from sklearn.metrics import accuracy_score
-from activation_ds import ActivationsDataset
+from countergen.editing.activation_ds import ActivationsDataset
 from tqdm import tqdm
 
 from countergen.config import VERBOSE
@@ -52,7 +52,7 @@ def fit_model(
 
             with torch.no_grad():
                 preds = torch.argmax(out, dim=-1)
-                n_correct += torch.where(preds == y).sum().item()
+                n_correct += (preds == y).sum().item()
                 n_tot += len(preds)
 
         if VERBOSE >= 3:

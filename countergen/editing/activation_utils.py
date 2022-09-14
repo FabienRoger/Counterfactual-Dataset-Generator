@@ -9,20 +9,23 @@ from countergen.types import AugmentedSample, Category
 from countergen.utils import get_gpt_tokenizer, unwrap_or
 
 
-def get_mlp_layers(model: GPT2LMHeadModel, layer_numbers: Optional[List[int]]):
+def get_mlp_modules(model: GPT2LMHeadModel, layer_numbers: Optional[List[int]]) -> Dict[str, nn.Module]:
     model_transformer: nn.ModuleList = model.transformer.h  # type: ignore
     layer_numbers = unwrap_or(layer_numbers, list(range(len(model_transformer))))
-    return [l.mlp for i, l in enumerate(model_transformer) if i in layer_numbers]
+    names = [f"transformer.h.{n}.mlp" for n in layer_numbers]
+    return {name: model.get_submodule(name) for name in names}
 
 
-def get_res_layers(model: GPT2LMHeadModel, layer_numbers: Optional[List[int]]):
+def get_res_modules(model: GPT2LMHeadModel, layer_numbers: Optional[List[int]]) -> Dict[str, nn.Module]:
     model_transformer: nn.ModuleList = model.transformer.h  # type: ignore
     layer_numbers = unwrap_or(layer_numbers, list(range(len(model_transformer))))
-    return [l for i, l in enumerate(model_transformer) if i in layer_numbers]
+    layer_numbers = unwrap_or(layer_numbers, list(range(len(model_transformer))))
+    names = [f"transformer.h.{n}" for n in layer_numbers]
+    return {name: model.get_submodule(name) for name in names}
 
 
 def get_corresponding_activations(
-    samples: Iterable[AugmentedSample], model: nn.Module, layers: Iterable[nn.Module]
+    samples: Iterable[AugmentedSample], model: nn.Module, modules: Iterable[nn.Module]
 ) -> Mapping[Category, List[Dict[nn.Module, torch.Tensor]]]:
     """For each category, returns a list of activations obtained by running the variations corresponding to this category."""
 
@@ -31,7 +34,7 @@ def get_corresponding_activations(
     activations_by_cat = defaultdict(lambda: [])
     for sample in samples:
         for inp, categories in sample.get_variations():
-            acts = get_activations(tokenizer(inp), model, layers)
+            acts = get_activations(tokenizer(inp, return_tensors="pt"), model, modules)
             for cat in categories:
                 activations_by_cat[cat].append(acts)
     return activations_by_cat
@@ -41,7 +44,7 @@ Operation = Callable[[torch.Tensor], torch.Tensor]
 
 
 def get_activations(
-    tokens: BatchEncoding, model: nn.Module, layers: Iterable[nn.Module], operation: Operation = lambda x: x
+    tokens: BatchEncoding, model: nn.Module, modules: Iterable[nn.Module], operation: Operation = lambda x: x
 ) -> Dict[nn.Module, torch.Tensor]:
     handles = []
     activations: Dict[nn.Module, torch.Tensor] = {}
@@ -49,8 +52,8 @@ def get_activations(
     def hook_fn(module, inp, out):
         activations[module] = operation(out[0].detach())
 
-    for layer in layers:
-        handles.append(layer.register_forward_hook(hook_fn))
+    for module in modules:
+        handles.append(module.register_forward_hook(hook_fn))
     try:
         model(**tokens.to(model.device))
     except Exception as e:
@@ -69,8 +72,8 @@ def run_and_modify(
     tokens: BatchEncoding, model: nn.Module, modification_fns: Dict[nn.Module, ModificationFn] = {}
 ) -> BatchEncoding:
     handles = []
-    for layer, f in modification_fns.items():
-        handles.append(layer.register_forward_hook(f))  # type: ignore
+    for module, f in modification_fns.items():
+        handles.append(module.register_forward_hook(f))  # type: ignore
     try:
         out = model(**tokens.to(model.device))
         return out

@@ -14,7 +14,7 @@ class ActivationsDataset(torch.utils.data.Dataset):
 
     @classmethod
     def from_activations(cls, activations: Mapping[Category, List[Dict[nn.Module, torch.Tensor]]], device: str = "cpu"):
-        """Group all activations regardless of the layer and the sequence position.
+        """Group all activations regardless of the module and the sequence position.
 
         All activations must be of the same shape, (seq_len, hid_size)."""
 
@@ -47,6 +47,6 @@ class ActivationsDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         x = self.x_data[idx, :]
-        y = self.y_data[idx, :]
+        y = self.y_data[idx]
         sample = (x, y)
         return sample
