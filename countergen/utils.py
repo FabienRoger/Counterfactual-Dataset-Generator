@@ -58,5 +58,6 @@ def maybe_tqdm(it: Iterable[T], do_tqdm: bool = False, **kwargs) -> Iterable[T]:
     else:
         return it
 
+
 def get_device() -> str:
     return "cuda:0" if torch.cuda.is_available() else "cpu"

@@ -86,7 +86,11 @@ class PerformanceStatsPerCategory(StatsAggregator):
         means = {n: {c: s.mean for c, s in d.items()} for n, d in aggregates.items()}
         errs = {n: {c: s.uncertainty_2sig for c, s in d.items()} for n, d in aggregates.items()}
         plot_mutli_bars(
-            means, xlabel="Model name", ylabel="Performance", title="Performance by model & category", err_by_type_by_cat=errs
+            means,
+            xlabel="Model name",
+            ylabel="Performance",
+            title="Performance by model & category",
+            err_by_type_by_cat=errs,
         )
 
 

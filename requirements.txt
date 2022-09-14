@@ -6,3 +6,4 @@ torch>=1.11
 tqdm>=4
 transformers>=4
 matplotlib>=3
+openai>=0.23
