@@ -59,7 +59,7 @@ class PerformanceStatsPerCategory(StatsAggregator):
     """Compute mean and uncertainty over mean."""
 
     def __call__(self, performances: Results) -> Mapping[Category, Stats]:
-        performances_per_category: DefaultDict[Category, List[Stats]] = defaultdict(lambda: [])
+        performances_per_category: DefaultDict[Category, List[Performance]] = defaultdict(lambda: [])
         for sample_perfs in performances:
             for perf, categories in sample_perfs:
                 for c in categories:
@@ -79,7 +79,7 @@ class PerformanceStatsPerCategory(StatsAggregator):
         for l in lines[1:]:
             c, p = l.split(": ")
             m, u = p.split(" +- ")
-            r[c] = Stats(m, u)
+            r[c] = Stats(float(m), float(u))
         return r
 
     def display(self, aggregates: Mapping[str, Mapping[Category, Stats]]):

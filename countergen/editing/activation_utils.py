@@ -1,10 +1,12 @@
-from typing import Callable, Dict, Iterable, List, Optional
+from collections import defaultdict
+from typing import Callable, Dict, Iterable, List, Mapping, Optional
 
 import torch
 from torch import nn
 from transformers import BatchEncoding, GPT2LMHeadModel
+from countergen.types import AugmentedSample, Category
 
-from countergen.utils import unwrap_or
+from countergen.utils import get_gpt_tokenizer, unwrap_or
 
 
 def get_mlp_layers(model: GPT2LMHeadModel, layer_numbers: Optional[List[int]]):
@@ -19,34 +21,20 @@ def get_res_layers(model: GPT2LMHeadModel, layer_numbers: Optional[List[int]]):
     return [l for i, l in enumerate(model_transformer) if i in layer_numbers]
 
 
-# def get_all_activations(ds: VariationDataset, model, layers, mode: str = "val"):
-#     prompts = ds.get_tokens_by_category(mode)
-#     activations = {}
-#     for category, l in prompts.items():
-#         activations[category] = {}
-#         for i, inps in enumerate(l):
-#             acts = get_activations(inps, model, layers)
-#             for layer, act in acts.items():
-#                 if i == 0:
-#                     activations[category][layer] = []
-#                 activations[category][layer].append(act)
-#     return activations
+def get_corresponding_activations(
+    samples: Iterable[AugmentedSample], model: nn.Module, layers: Iterable[nn.Module]
+) -> Mapping[Category, List[Dict[nn.Module, torch.Tensor]]]:
+    """For each category, returns a list of activations obtained by running the variations corresponding to this category."""
 
+    tokenizer = get_gpt_tokenizer()
 
-# def get_corresponding_activations(datasets, model, layers, mode: str = "val"):
-#     """datasets is a dict where keys are categories & values are StringDatasets."""
-#     activations = {}
-#     for category, ds in datasets.items():
-#         ds: StringsDataset = ds
-#         prompts = ds.get_all_tokens(mode)
-#         activations[category] = {}
-#         for i, inps in enumerate(prompts):
-#             acts = get_activations(inps, model, layers)
-#             for layer, act in acts.items():
-#                 if i == 0:
-#                     activations[category][layer] = []
-#                 activations[category][layer].append(act)
-#     return activations
+    activations_by_cat = defaultdict(lambda: [])
+    for sample in samples:
+        for inp, categories in sample.get_variations():
+            acts = get_activations(tokenizer(inp), model, layers)
+            for cat in categories:
+                activations_by_cat[cat].append(acts)
+    return activations_by_cat
 
 
 Operation = Callable[[torch.Tensor], torch.Tensor]
@@ -54,9 +42,9 @@ Operation = Callable[[torch.Tensor], torch.Tensor]
 
 def get_activations(
     tokens: BatchEncoding, model: nn.Module, layers: Iterable[nn.Module], operation: Operation = lambda x: x
-) -> Dict[nn.Module, BatchEncoding]:
+) -> Dict[nn.Module, torch.Tensor]:
     handles = []
-    activations: Dict[nn.Module, BatchEncoding] = {}
+    activations: Dict[nn.Module, torch.Tensor] = {}
 
     def hook_fn(module, inp, out):
         activations[module] = operation(out[0].detach())
@@ -73,7 +61,7 @@ def get_activations(
     return activations
 
 
-# (module, input, output) => output
+# (module, input, output) -> output
 ModificationFn = Callable[[nn.Module, torch.Tensor, torch.Tensor], torch.Tensor]
 
 

@@ -7,3 +7,4 @@ tqdm>=4
 transformers>=4
 matplotlib>=3
 openai>=0.23
+torchmetrics>=0.9

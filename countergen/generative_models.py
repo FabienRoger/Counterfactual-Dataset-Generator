@@ -6,7 +6,7 @@ import torch
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, BatchEncoding
 
 from countergen.types import Input, ModelEvaluator, Output, Performance
-from countergen.utils import concat_dicts, get_device, perplexity, remove_last_tok, unwrap_or
+from countergen.utils import concat_dicts, get_device, get_gpt_tokenizer, perplexity, remove_last_tok, unwrap_or
 
 metrics = ["perplexity", "probability"]
 
@@ -15,7 +15,7 @@ def get_evaluator_for_model(model: torch.nn.Module, metric: str = "probability")
     """Return the ModelEvaluator corresponding to the model & the metric.
 
     The model should take {"input_ids": [tensor], "attention_mask": [tensor]} as input."""
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+    tokenizer = get_gpt_tokenizer()
 
     def run(inp: Input, out: Output) -> Performance:
         if len(out) == 0:

@@ -1,3 +1,4 @@
+from functools import lru_cache
 import os
 from math import exp, log2
 from pathlib import Path
@@ -5,6 +6,7 @@ from typing import Any, Callable, Dict, Iterable, Mapping, Optional, Sequence, T
 
 import torch
 from tqdm import tqdm  # type: ignore
+from transformers import GPT2Tokenizer
 
 MODULE_PATH = str(Path(__file__).parent)
 
@@ -61,3 +63,21 @@ def maybe_tqdm(it: Iterable[T], do_tqdm: bool = False, **kwargs) -> Iterable[T]:
 
 def get_device() -> str:
     return "cuda:0" if torch.cuda.is_available() else "cpu"
+
+
+@lru_cache(maxsize=1)
+def get_gpt_tokenizer() -> GPT2Tokenizer:
+    return GPT2Tokenizer.from_pretrained("gpt2")
+
+
+def orthonormalize(dir: torch.Tensor, dirs: torch.Tensor) -> torch.Tensor:
+    """Return dir, but projected in the orthogonal of the subspace spanned by dirs.
+
+    Assume that dirs are already orthonomal"""
+    inner_products = torch.einsum("n h, h -> n", dirs, dir)
+    new_dir = dir - torch.einsum("n, n h -> h", inner_products, dirs)
+    new_dir /= torch.linalg.norm(new_dir)
+
+    torch.testing.assert_allclose(torch.einsum("n h, h -> n", dirs, new_dir), torch.zeros(len(dirs)))
+
+    return new_dir
