@@ -12,7 +12,6 @@ from typing import (
     List,
     Tuple,
 )
-from attrs import define
 
 Input = str  # The input to an NLP mode
 Output = List[str]  # The different acceptable outputs of the NLP, string label or number, but in string format
@@ -25,11 +24,16 @@ Category = str  # The different kinds of data produced by augmenters
 
 class Augmenter(metaclass=abc.ABCMeta):
     @abc.abstractproperty
-    def categories(self) -> Tuple[Category, Category]:
+    def categories(self) -> Tuple[Category, ...]:
+        """Categories the augmenter can output"""
         ...
 
     @abc.abstractmethod
     def convert_to(self, inp: Input, to: Category) -> Input:
+        """Transform the input to make it a member of the target category.
+
+        Returns the input unchanged if the input is already a member of the target category or if
+        the transformation is not applicable."""
         ...
 
 
