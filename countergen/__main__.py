@@ -2,16 +2,18 @@ from typing import List, Optional, Union
 
 import fire  # type: ignore
 
-from countergen.classification_models import get_huggingface_classification_model_evaluator
-from countergen.augmenter_loading import SimpleAugmenter, default_converter_paths
-from countergen.data_augmentation import AugmentedDataset, augment_dataset
+from countergen.evaluation import get_evaluator_for_classification_pipline, get_evaluator_for_generative_model
+from countergen.augmentation import SimpleAugmenter, AugmentedDataset, Dataset
+from countergen.augmentation.simple_augmenter import default_converter_paths
 from countergen.evaluation import evaluate_and_print
-from countergen.generative_models import get_huggingface_gpt_model_evaluator
 from countergen.tools.cli_utils import _overwrite_fire_help_text
+from countergen.tools.utils import get_device, unwrap_or
 from countergen.types import Augmenter
 
+import torch
 
-def augment(load_path: str, save_path: str, *augmenters: str):
+
+def augment(load_path: str, save_path: str, *augmenters_desc: str):
     """Add counterfactuals to the dataset and save it elsewhere.
 
     Args
@@ -33,17 +35,19 @@ def augment(load_path: str, save_path: str, *augmenters: str):
     if not augmenters:
         augmenters = ("gender",)
 
-    converters_objs: List[Augmenter] = []
-    for c_str in augmenters:
+    augmenters: List[Augmenter] = []
+    for c_str in augmenters_desc:
         if c_str.endswith(".json"):
-            converter = SimpleAugmenter.from_json(c_str)
+            augmenter = SimpleAugmenter.from_json(c_str)
         elif c_str in default_converter_paths:
-            converter = SimpleAugmenter.from_default(c_str)
+            augmenter = SimpleAugmenter.from_default(c_str)
         else:
-            print(f"{c_str} is not a valid converter name.")
+            print(f"{c_str} is not a valid augmenter name.")
             return
-        converters_objs.append(converter)
-    augment_dataset(load_path, save_path, converters_objs)
+        augmenters.append(augmenter)
+    ds = Dataset.from_jsonl(load_path)
+    aug_ds = ds.augment(augmenters)
+    aug_ds.save_to_jsonl(save_path)
     print("Done!")
 
 
@@ -77,20 +81,33 @@ def evaluate(
     ds = AugmentedDataset.from_jsonl(load_path)
     if hf_gpt_model is not None:
         if isinstance(hf_gpt_model, bool) and hf_gpt_model:
-            model_ev = get_huggingface_gpt_model_evaluator()
+            model_name = "distilgpt2"
         elif isinstance(hf_gpt_model, str):
-            model_ev = get_huggingface_gpt_model_evaluator(model_name=hf_gpt_model)
+            model_name = hf_gpt_model
         else:
             print("Invalid model")
             return
+
+        from transformers import GPT2LMHeadModel
+
+        device = unwrap_or(device, get_device())
+        model: torch.nn.Module = GPT2LMHeadModel.from_pretrained(model_name).to(device)
+        model_ev = get_evaluator_for_generative_model(model, "probability")
     elif hf_classifier_model is not None:
         if isinstance(hf_gpt_model, bool) and hf_gpt_model:
-            model_ev = get_huggingface_classification_model_evaluator()
+            model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
         elif isinstance(hf_gpt_model, str):
-            model_ev = get_huggingface_classification_model_evaluator(model_name=hf_gpt_model)
+            model_name = hf_gpt_model
         else:
             print("Invalid model")
             return
+
+        import transformers
+        from transformers import pipeline
+
+        transformers.logging.set_verbosity_error()
+        sentiment_task_pipeline = pipeline("sentiment-analysis", model=model_name, tokenizer=model_name)
+        model_ev = get_evaluator_for_classification_pipline(sentiment_task_pipeline)
     else:
         print("Please provide either hf-gpt-model or hf-gpt-model")
         return

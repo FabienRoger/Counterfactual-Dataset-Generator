@@ -6,8 +6,6 @@ from transformers import Pipeline
 
 
 def get_evaluator_for_classification_pipline(pipeline: Pipeline):
-    transformers.logging.set_verbosity_error()
-
     def run(inp: Input, out: Output) -> Performance:
         assert len(out) == 1, "There should be only one correct label"
         true_label = out[0]
@@ -21,6 +19,7 @@ def get_evaluator_for_classification_pipline(pipeline: Pipeline):
         return perf
 
     return run
+
 
 # TODO: Remove
 # def get_huggingface_classification_model_evaluator(

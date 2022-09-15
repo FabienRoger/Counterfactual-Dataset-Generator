@@ -1,5 +1,6 @@
-from evaluation import evaluate
+from evaluation import evaluate, evaluate_and_print, evaluate_and_save
 
 from aggregators import PerformanceStatsPerCategory, AveragePerformancePerCategory, AverageDifference
 
 from generative_models import get_evaluator_for_generative_model
+from classification_models import get_evaluator_for_classification_pipline

@@ -14,7 +14,9 @@ metrics = ["perplexity", "probability"]
 def get_evaluator_for_generative_model(model: torch.nn.Module, metric: str = "probability") -> ModelEvaluator:
     """Return the ModelEvaluator corresponding to the model & the metric.
 
-    The model should take {"input_ids": [tensor], "attention_mask": [tensor]} as input."""
+    The model should take {"input_ids": [tensor], "attention_mask": [tensor]} as input.
+    
+    Available metrics: probability, perplexity"""
     tokenizer = get_gpt_tokenizer()
 
     def run(inp: Input, out: Output) -> Performance:
