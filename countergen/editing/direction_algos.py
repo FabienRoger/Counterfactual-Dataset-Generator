@@ -6,7 +6,7 @@ from torchmetrics import HingeLoss
 from countergen.config import VERBOSE
 from countergen.editing.activation_ds import ActivationsDataset
 from countergen.editing.models import fit_model, get_bottlenecked_linear, get_bottlenecked_mlp
-from countergen.utils import maybe_tqdm, orthonormalize
+from countergen.tools.utils import maybe_tqdm, orthonormalize
 
 
 def inlp(ds: ActivationsDataset, n_dim: int = 8, n_training_iters: int = 400) -> torch.Tensor:

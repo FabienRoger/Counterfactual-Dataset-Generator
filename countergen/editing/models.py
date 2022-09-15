@@ -7,7 +7,7 @@ from countergen.editing.activation_ds import ActivationsDataset
 from tqdm import tqdm
 
 from countergen.config import VERBOSE
-from countergen.utils import maybe_tqdm
+from countergen.tools.utils import maybe_tqdm
 
 
 def get_bottlenecked_linear(input_dim: int, output_dim: int, bottleneck_dim: int = 1):

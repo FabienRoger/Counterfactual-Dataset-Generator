@@ -7,7 +7,7 @@ from countergen.augmenter_loading import SimpleAugmenter, default_converter_path
 from countergen.data_augmentation import AugmentedDataset, augment_dataset
 from countergen.evaluation import evaluate_and_print
 from countergen.generative_models import get_huggingface_gpt_model_evaluator
-from countergen.misc import _overwrite_fire_help_text
+from countergen.tools.cli_utils import _overwrite_fire_help_text
 from countergen.types import Augmenter
 
 

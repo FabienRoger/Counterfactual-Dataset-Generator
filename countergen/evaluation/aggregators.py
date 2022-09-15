@@ -4,9 +4,9 @@ from typing import Any, DefaultDict, Iterable, List, Mapping, Optional, Sequence
 import numpy as np
 from attrs import define
 
-from countergen.plot_utils import plot_mutli_bars
+from countergen.tools.plot_utils import plot_mutli_bars
 from countergen.types import AugmentedSample, Category, ModelEvaluator, Performance, Results, StatsAggregator
-from countergen.utils import geometric_mean, mean
+from countergen.tools.math_utils import geometric_mean, mean
 
 
 @define

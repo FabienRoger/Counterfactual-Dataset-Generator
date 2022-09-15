@@ -7,9 +7,9 @@ from typing import Any, Iterable, List, Mapping, NamedTuple, Optional, Sequence,
 from attrs import define
 
 from countergen.config import VERBOSE
-from countergen.augmenter_loading import SimpleAugmenter
+from countergen.augmentation.simple_augmenter import SimpleAugmenter
 from countergen.types import AugmentedSample, Category, Augmenter, Input, Output, Variation
-from countergen.utils import MODULE_PATH, maybe_tqdm
+from countergen.tools.utils import MODULE_PATH, maybe_tqdm
 
 default_dataset_paths: Mapping[str, str] = {
     "doublebind": f"{MODULE_PATH}/data/datasets/doublebind.jsonl",
@@ -18,17 +18,17 @@ default_dataset_paths: Mapping[str, str] = {
 }
 
 
-def augment_dataset(
-    dataset_path: str,
-    save_path: str = ".",
-    augmenters: Iterable[Union[str, Augmenter]] = ["gender"],
-):
-    converters_ = [
-        SimpleAugmenter.from_default(converter) if isinstance(converter, str) else converter for converter in augmenters
-    ]
-    ds = Dataset.from_jsonl(dataset_path)
-    aug_ds = generate_all_variations(converters_, ds)
-    aug_ds.save_to_jsonl(save_path)
+# def augment_dataset(
+#     dataset_path: str,
+#     save_path: str = ".",
+#     augmenters: Iterable[Union[str, Augmenter]] = ["gender"],
+# ):
+#     converters_ = [
+#         SimpleAugmenter.from_default(converter) if isinstance(converter, str) else converter for converter in augmenters
+#     ]
+#     ds = Dataset.from_jsonl(dataset_path)
+#     aug_ds = generate_all_variations(converters_, ds)
+#     aug_ds.save_to_jsonl(save_path)
 
 
 @define
@@ -44,6 +44,8 @@ class Sample:
 
 @define
 class SampleWithVariations(Sample, AugmentedSample):
+    """AugmentedSample which explicitly stores all variations."""
+
     variations: List[Variation] = []
 
     def get_variations(self) -> Sequence[Variation]:
@@ -85,6 +87,9 @@ class Dataset:
             for d in data:
                 samples.append(Sample.from_json_dict(d))
         return Dataset(samples)
+
+    def augment(self, converters: Iterable[Augmenter]) -> "AugmentedDataset":
+        return generate_all_variations(converters, self)
 
 
 @define

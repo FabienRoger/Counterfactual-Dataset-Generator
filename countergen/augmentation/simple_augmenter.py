@@ -8,7 +8,7 @@ import spacy
 from attrs import define
 
 from countergen.types import Category, Augmenter, Input
-from countergen.utils import MODULE_PATH, other
+from countergen.tools.utils import MODULE_PATH, other
 
 default_converter_paths: Mapping[str, str] = {
     "gender": f"{MODULE_PATH}/data/converters/gender.json",

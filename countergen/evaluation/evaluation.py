@@ -13,7 +13,7 @@ from countergen.types import (
     Results,
     StatsAggregator,
 )
-from countergen.utils import maybe_tqdm, mean
+from countergen.tools.utils import maybe_tqdm, mean
 
 
 T = TypeVar("T")

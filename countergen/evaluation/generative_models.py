@@ -6,7 +6,7 @@ import torch
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, BatchEncoding
 
 from countergen.types import Input, ModelEvaluator, Output, Performance
-from countergen.utils import concat_dicts, get_device, get_gpt_tokenizer, perplexity, remove_last_tok, unwrap_or
+from countergen.tools.utils import concat_dicts, get_device, get_gpt_tokenizer, perplexity, remove_last_tok, unwrap_or
 
 metrics = ["perplexity", "probability"]
 
