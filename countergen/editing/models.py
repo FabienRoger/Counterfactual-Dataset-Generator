@@ -55,6 +55,6 @@ def fit_model(
                 n_tot += len(preds)
 
         if VERBOSE >= 3:
-            tepoch.set_postfix(loss=epoch_loss, accuracy=n_correct / n_tot) # type:ignore
+            tepoch.set_postfix(loss=epoch_loss, accuracy=n_correct / n_tot)  # type:ignore
 
     return {"loss": epoch_loss, "accuracy": n_correct / n_tot}

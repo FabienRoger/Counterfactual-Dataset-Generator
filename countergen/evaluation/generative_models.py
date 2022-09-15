@@ -16,7 +16,7 @@ def get_evaluator_for_generative_model(model: torch.nn.Module, metric: str = "pr
     """Return the ModelEvaluator corresponding to the model & the metric.
 
     The model should take {"input_ids": [tensor], "attention_mask": [tensor]} as input.
-    
+
     Available metrics: probability, perplexity"""
     tokenizer = get_gpt_tokenizer()
 
