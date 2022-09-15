@@ -6,7 +6,7 @@ import torch
 from attrs import define
 
 
-def get_configs(named_modules: Dict[str, nn.Module], dirs: torch.Tensor, has_leftover: bool = False):
+def get_edit_configs(named_modules: Dict[str, nn.Module], dirs: torch.Tensor, has_leftover: bool = False):
     return [ReplacementConfig(name, module, dirs, has_leftover) for name, module in named_modules.items()]
 
 

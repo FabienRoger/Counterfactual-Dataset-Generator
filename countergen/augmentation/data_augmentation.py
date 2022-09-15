@@ -9,7 +9,8 @@ from attrs import define
 from countergen.config import VERBOSE
 from countergen.augmentation.simple_augmenter import SimpleAugmenter
 from countergen.types import AugmentedSample, Category, Augmenter, Input, Output, Variation
-from countergen.tools.utils import MODULE_PATH, maybe_tqdm
+from countergen.tools.utils import maybe_tqdm
+from countergen.config import MODULE_PATH
 
 default_dataset_paths: Mapping[str, str] = {
     "doublebind": f"{MODULE_PATH}/data/datasets/doublebind.jsonl",

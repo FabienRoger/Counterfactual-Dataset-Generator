@@ -6,8 +6,6 @@ import torch
 from tqdm import tqdm  # type: ignore
 from transformers import GPT2Tokenizer
 
-MODULE_PATH = str(Path(__file__).parent)
-
 T = TypeVar("T")
 
 
