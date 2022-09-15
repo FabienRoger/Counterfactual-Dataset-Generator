@@ -5,6 +5,8 @@ from torch import nn
 import torch
 from attrs import define
 
+def get_configs(named_modules: Dict[str, nn.Module], dirs: torch.Tensor, has_leftover: bool = False):
+    return [ReplacementConfig(name, module, dirs, has_leftover) for name, module in named_modules.items()]
 
 @define
 class ReplacementConfig:
@@ -12,10 +14,6 @@ class ReplacementConfig:
     old_module: nn.Module
     dirs: torch.Tensor
     has_leftover: bool = False
-
-    @classmethod
-    def from_module_dict(cls, named_modules: Dict[str, nn.Module], dirs: torch.Tensor, has_leftover: bool = False):
-        return [ReplacementConfig(name, module, dirs, has_leftover) for name, module in named_modules.items()]
 
 
 def edit_model(model: nn.Module, configs: Iterable[ReplacementConfig]):

@@ -1,10 +1,11 @@
-from typing import Dict, List, Mapping
+from typing import Dict, Iterable, List, Mapping
 
 import torch
 from attrs import define
 from torch import nn
+from countergen.editing.activation_utils import get_corresponding_activations
 
-from countergen.types import Category
+from countergen.types import AugmentedSample, Category
 
 
 @define
@@ -13,7 +14,14 @@ class ActivationsDataset(torch.utils.data.Dataset):
     y_data: torch.Tensor
 
     @classmethod
-    def from_activations(cls, activations: Mapping[Category, List[Dict[nn.Module, torch.Tensor]]], device: str = "cpu"):
+    def from_augmented_samples(cls, samples: Iterable[AugmentedSample], model: nn.Module, modules: Iterable[nn.Module]):
+        activations_dict = get_corresponding_activations(samples, model, modules)
+        return ActivationsDataset.from_activations_dict(activations_dict)
+
+    @classmethod
+    def from_activations_dict(
+        cls, activations: Mapping[Category, List[Dict[nn.Module, torch.Tensor]]], device: str = "cpu"
+    ):
         """Group all activations regardless of the module and the sequence position.
 
         All activations must be of the same shape, (seq_len, hid_size)."""
