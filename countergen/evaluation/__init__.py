@@ -1,6 +1,10 @@
-from evaluation import evaluate, evaluate_and_print, evaluate_and_save
+from countergen.evaluation.evaluation import evaluate, evaluate_and_print, evaluate_and_save
 
-from aggregators import PerformanceStatsPerCategory, AveragePerformancePerCategory, AverageDifference
+from countergen.evaluation.aggregators import (
+    PerformanceStatsPerCategory,
+    AveragePerformancePerCategory,
+    AverageDifference,
+)
 
-from generative_models import get_evaluator_for_generative_model
-from classification_models import get_evaluator_for_classification_pipline
+from countergen.evaluation.generative_models import get_evaluator_for_generative_model
+from countergen.evaluation.classification_models import get_evaluator_for_classification_pipline

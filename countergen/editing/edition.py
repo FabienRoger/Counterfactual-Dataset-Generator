@@ -5,8 +5,10 @@ from torch import nn
 import torch
 from attrs import define
 
+
 def get_configs(named_modules: Dict[str, nn.Module], dirs: torch.Tensor, has_leftover: bool = False):
     return [ReplacementConfig(name, module, dirs, has_leftover) for name, module in named_modules.items()]
+
 
 @define
 class ReplacementConfig:
@@ -27,7 +29,7 @@ def edit_model(model: nn.Module, configs: Iterable[ReplacementConfig]):
         if hasattr(parent, name):  # Regular case, if it's a regular attribute
             setattr(parent, name, new_module)
         else:  # ModuleList case, if it's the member of a list
-            parent[int(name)] = new_module
+            parent[int(name)] = new_module  # type: ignore
     return model
 
 

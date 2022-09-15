@@ -1,9 +1,7 @@
 from pathlib import Path
 from typing import Iterable, Mapping, TypeVar
-from countergen.aggregators import AveragePerformancePerCategory
+from countergen.evaluation.aggregators import AveragePerformancePerCategory
 from countergen.config import VERBOSE
-from countergen.data_augmentation import AugmentedDataset
-from countergen.generative_models import get_huggingface_gpt_model_evaluator
 
 from countergen.types import (
     AugmentedSample,
@@ -13,7 +11,8 @@ from countergen.types import (
     Results,
     StatsAggregator,
 )
-from countergen.tools.utils import maybe_tqdm, mean
+from countergen.tools.utils import maybe_tqdm
+from countergen.tools.math_utils import mean
 
 
 T = TypeVar("T")

@@ -2,9 +2,8 @@ from typing import Any, Dict, Tuple
 import torch
 from torch import nn
 import numpy as np
-from sklearn.metrics import accuracy_score
 from countergen.editing.activation_ds import ActivationsDataset
-from tqdm import tqdm
+from tqdm import tqdm  # type: ignore
 
 from countergen.config import VERBOSE
 from countergen.tools.utils import maybe_tqdm
@@ -56,6 +55,6 @@ def fit_model(
                 n_tot += len(preds)
 
         if VERBOSE >= 3:
-            tepoch.set_postfix(loss=epoch_loss, accuracy=n_correct / n_tot)
+            tepoch.set_postfix(loss=epoch_loss, accuracy=n_correct / n_tot) # type:ignore
 
     return {"loss": epoch_loss, "accuracy": n_correct / n_tot}

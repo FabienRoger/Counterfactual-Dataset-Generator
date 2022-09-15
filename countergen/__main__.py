@@ -32,8 +32,8 @@ def augment(load_path: str, save_path: str, *augmenters_desc: str):
     - countergen augment LOAD_PATH SAVE_PATH
     """
 
-    if not augmenters:
-        augmenters = ("gender",)
+    if not augmenters_desc:
+        augmenters_desc = ("gender",)
 
     augmenters: List[Augmenter] = []
     for c_str in augmenters_desc:
@@ -90,7 +90,7 @@ def evaluate(
 
         from transformers import GPT2LMHeadModel
 
-        device = unwrap_or(device, get_device())
+        device = get_device()
         model: torch.nn.Module = GPT2LMHeadModel.from_pretrained(model_name).to(device)
         model_ev = get_evaluator_for_generative_model(model, "probability")
     elif hf_classifier_model is not None:

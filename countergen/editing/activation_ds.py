@@ -10,8 +10,8 @@ from countergen.types import AugmentedSample, Category
 
 @define
 class ActivationsDataset(torch.utils.data.Dataset):
-    x_data: torch.Tensor
-    y_data: torch.Tensor
+    x_data: torch.Tensor  # dtype: float32
+    y_data: torch.Tensor  # dtype: long
 
     @classmethod
     def from_augmented_samples(cls, samples: Iterable[AugmentedSample], model: nn.Module, modules: Iterable[nn.Module]):
