@@ -19,17 +19,3 @@ def get_evaluator_for_classification_pipline(pipeline: Pipeline):
         return perf
 
     return run
-
-
-# TODO: Remove
-# def get_huggingface_classification_model_evaluator(
-#     pipeline_name: str = "sentiment-analysis",
-#     model_name: str = "cardiffnlp/twitter-roberta-base-sentiment-latest",
-# ) -> ModelEvaluator:
-#     from transformers import pipeline
-#     import transformers
-
-#     transformers.logging.set_verbosity_error()
-
-#     sentiment_task = pipeline(pipeline_name, model=model_name, tokenizer=model_name)
-#     return get_evaluator_for_classification_pipline(sentiment_task)

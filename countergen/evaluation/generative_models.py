@@ -49,15 +49,6 @@ def get_evaluator_for_generative_model(model: torch.nn.Module, metric: str = "pr
     return run
 
 
-# TODO: Remove
-# def get_huggingface_gpt_model_evaluator(
-#     model_name: str = "distilgpt2", device: Optional[str] = None, metric: str = "probability"
-# ) -> ModelEvaluator:
-#     device = unwrap_or(device, get_device())
-#     model: torch.nn.Module = GPT2LMHeadModel.from_pretrained(model_name).to(device)
-#     return get_evaluator_for_model(model, metric)
-
-
 def get_correct_logprobs(
     tokens_inp: BatchEncoding, token_outs: List[BatchEncoding], model: torch.nn.Module
 ) -> List[torch.Tensor]:

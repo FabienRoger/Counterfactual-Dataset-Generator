@@ -19,19 +19,6 @@ default_dataset_paths: Mapping[str, str] = {
 }
 
 
-# def augment_dataset(
-#     dataset_path: str,
-#     save_path: str = ".",
-#     augmenters: Iterable[Union[str, Augmenter]] = ["gender"],
-# ):
-#     converters_ = [
-#         SimpleAugmenter.from_default(converter) if isinstance(converter, str) else converter for converter in augmenters
-#     ]
-#     ds = Dataset.from_jsonl(dataset_path)
-#     aug_ds = generate_all_variations(converters_, ds)
-#     aug_ds.save_to_jsonl(save_path)
-
-
 @define
 class Sample:
     input: Input

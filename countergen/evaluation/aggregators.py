@@ -126,24 +126,3 @@ class AverageDifference(StatsAggregator):
 
     def display(self, aggregates: Mapping[str, float]):
         raise NotImplementedError()
-
-
-# DOESN'T WORK EASILY because you have to split the file.
-
-# @define
-# class MultipleStatsAggregator(StatsAggregator):
-#     aggregators: list[StatsAggregator]
-
-#     def __call__(self, performances: Results) -> list[Any]:
-#         return [ag(performances) for ag in self.aggregators]
-
-#     def save_aggregation(self, aggregate: list[Any], file: Optional[TextIO] = None):
-#         for ag in self.aggregators:
-#             ag.save_aggregation(aggregate, file)
-
-#     def load_aggregation(self, file: TextIO) -> list[Any]:
-#         return [ag.load_aggregation(file) for ag in self.aggregators]
-
-#     def display(self, aggregates: Sequence[list[Any]]):
-#         for ag in self.aggregators:
-#             ag.display(aggregates)
