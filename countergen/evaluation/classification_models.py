@@ -43,7 +43,7 @@ def get_evaluator_for_classification_model(model: nn.Module, tokenizer, labels: 
         tokens = tokenizer(inp, return_tensors="pt")
         with torch.no_grad():
             pred_logits = model(**tokens)[0]
-        
+
         pred_id = torch.argmax(pred_logits)
         pred = labels[pred_id]
         perf = 1.0 if true_label == pred else 0.0

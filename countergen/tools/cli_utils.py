@@ -7,7 +7,7 @@ def get_argument(argument: Any, default: str) -> Optional[str]:
     elif isinstance(argument, str):
         return argument
     else:
-        return
+        return None
 
 
 def overwrite_fire_help_text():  # type: ignore

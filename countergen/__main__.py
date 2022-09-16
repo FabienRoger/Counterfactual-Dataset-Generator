@@ -114,6 +114,10 @@ def evaluate(
         sentiment_task_pipeline = pipeline("sentiment-analysis", model=pipeline_name, tokenizer=pipeline_name)
         model_ev = get_evaluator_for_classification_pipline(sentiment_task_pipeline)
     elif hf_classifier_model is not None:
+        if labels is None:
+            print("Please provide labels (see --help to know how to use the --labels flag)")
+            return
+
         model_name = get_argument(hf_classifier_model, default="Hate-speech-CNERG/dehatebert-mono-english")
         if model_name is None:
             print(f"Invalid model {model_name}")
