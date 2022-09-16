@@ -158,4 +158,4 @@ if __name__ == "__main__":
     # python -m countergen evaluate countergen\data\augdatasets\tiny-test.jsonl --hf_gpt_model
     # python -m countergen evaluate tests_saves/testtwit2.jsonl --hf_classifier_model
     # python -m countergen evaluate countergen\data\augdatasets\doublebind.jsonl --hf_gpt_model
-    # python -m countergen evaluate countergen\data\augdatasets\hate-test.jsonl --hf_classifier_model --labels hate/noHate
+    # python -m countergen evaluate countergen\data\augdatasets\hate-test.jsonl --hf_classifier_model --labels noHate/hate

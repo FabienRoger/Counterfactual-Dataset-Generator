@@ -29,12 +29,17 @@ def get_evaluator_for_classification_pipline(pipeline: Pipeline):
     return run
 
 
-def get_evaluator_for_classification_model(model: nn.Module, tokenizer, labels: List[str]):
+def get_evaluator_for_classification_model(
+    model: nn.Module, tokenizer, labels: List[str], metric: str = "correct_prob"
+):
     """Returns a function which evaluate the model on a (input,output) pair.
 
     The tokenizer will be called using __call__, and must support the return_tensors="pt" argument.
     The output of the model must contain a "logits" field, which is the prediction logits.
-    The function returns 1 if the top-1 prediction matches the ouput and 0 otherwise."""
+
+    if metric="correct_prob", returns the probability of the correct token.
+    if metric="accuracy", returns 1 if the top-1 prediction matches the ouput and 0 otherwise.
+    otherwise returns ValueError."""
 
     def run(inp: Input, out: Output) -> Performance:
         assert len(out) == 1, "There should be only one correct label"
@@ -42,11 +47,15 @@ def get_evaluator_for_classification_model(model: nn.Module, tokenizer, labels: 
 
         tokens = tokenizer(inp, return_tensors="pt")
         with torch.no_grad():
-            pred_logits = model(**tokens)[0]
+            pred_logits = model(**tokens).logits[0]
 
-        pred_id = torch.argmax(pred_logits)
-        pred = labels[pred_id]
-        perf = 1.0 if true_label == pred else 0.0
+        if metric == "accuracy":
+            pred_id = torch.argmax(pred_logits)
+            pred = labels[pred_id]
+            perf = 1.0 if true_label == pred else 0.0
+        elif metric == "correct_prob":
+            correct_id = labels.index(true_label)
+            perf = torch.softmax(pred_logits, dim=-1)[correct_id]
         if VERBOSE >= 4:
             print(f"inp={inp} true_label={true_label} pred={pred} perf={perf}")
         return perf

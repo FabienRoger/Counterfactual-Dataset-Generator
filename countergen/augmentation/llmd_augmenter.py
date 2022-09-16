@@ -37,7 +37,6 @@ DEFAULT_PROMPT = """0: Here is some text: {When the doctor asked Linda to take t
 
 @define
 class LlmdAugmenter(Augmenter):
-    categories: Tuple[Category, ...]
     categories_instructions: Dict[Category, str]
     prompt_template: str = DEFAULT_PROMPT
     engine: str = "text-davinci-002"
@@ -46,9 +45,11 @@ class LlmdAugmenter(Augmenter):
     def from_default(cls, name: str):
         if name not in DEFAULT_AUGMENTERS:
             raise ValueError(f"{name} not a valid default augmenter. Choose one in {set(DEFAULT_AUGMENTERS.keys())}")
-        categories_instructions = DEFAULT_AUGMENTERS[name]
-        categories = tuple(categories_instructions.keys())
-        return LlmdAugmenter(categories, categories_instructions)
+        return LlmdAugmenter(DEFAULT_AUGMENTERS[name])
+
+    @property
+    def categories(self) -> Tuple[Category, ...]:
+        return tuple(self.categories_instructions.keys())
 
     def convert_to(self, inp: Input, to: Category) -> Input:
         instruction = self.categories_instructions[to]
