@@ -9,7 +9,7 @@ from attrs import define
 from countergen.config import VERBOSE
 from countergen.augmentation.simple_augmenter import SimpleAugmenter
 from countergen.types import AugmentedSample, Category, Augmenter, Input, Output, Variation
-from countergen.tools.utils import maybe_tqdm
+from countergen.tools.utils import all_same, maybe_tqdm
 from countergen.config import MODULE_PATH
 
 default_dataset_paths: Mapping[str, str] = {
@@ -116,11 +116,15 @@ def generate_all_variations(augmenters: Iterable[Augmenter], ds: Dataset) -> Aug
         variations = [Variation(sample.input, ())]
         for converter in augmenters:
             new_variations = []
-            for category in converter.categories:
-                new_variations += [
+            for v, old_categories in variations:
+                converted = [
                     Variation(converter.convert_to(v, category), old_categories + (category,))
-                    for v, old_categories in variations
+                    for category in converter.categories
                 ]
-            variations = list(set(new_variations))  # TODO: better things to remove duplicates
+                if not all_same([v.text for v in converted]):
+                    new_variations += converted
+                else:
+                    new_variations.append(Variation(v, old_categories))
+            variations = new_variations
         augmented_samples.append(SampleWithVariations.from_sample(sample, variations))
     return AugmentedDataset(augmented_samples)

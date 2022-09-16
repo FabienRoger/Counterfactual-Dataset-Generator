@@ -23,6 +23,10 @@ def unwrap_or(maybe: Optional[T], default: T) -> T:
     return default if maybe is None else maybe
 
 
+def all_same(l: Sequence[Any]) -> bool:
+    return all(x == l[0] for x in l[1:])
+
+
 def concat_dicts(dicts: Sequence[Mapping[Any, torch.Tensor]]) -> Dict[Any, torch.Tensor]:
     if not dicts:
         raise ValueError("dicts is empty")
