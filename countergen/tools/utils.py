@@ -55,3 +55,9 @@ def get_device() -> str:
 @lru_cache(maxsize=1)
 def get_gpt_tokenizer() -> GPT2Tokenizer:
     return GPT2Tokenizer.from_pretrained("gpt2")
+
+
+def estimate_paraphrase_length(text: str):
+    average_token_length = 3
+    safety_margin = 50
+    return len(text) // average_token_length + safety_margin

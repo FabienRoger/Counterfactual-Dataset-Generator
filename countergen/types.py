@@ -19,13 +19,15 @@ Output = List[str]  # The different acceptable outputs of the NLP, string label 
 Performance = float  # usually between zero & one (one is better)
 ModelEvaluator = Callable[[Input, Output], Performance]
 
-Category = str  # The different kinds of data produced by augmenters
+Category = str  # The different kinds of data produced by augmenters.
 
 
 class Augmenter(metaclass=abc.ABCMeta):
     @abc.abstractproperty
     def categories(self) -> Tuple[Category, ...]:
-        """Categories the augmenter can output"""
+        """Categories the augmenter can output.
+
+        Empty tuple if paraphrase."""
         ...
 
     @abc.abstractmethod
@@ -35,6 +37,11 @@ class Augmenter(metaclass=abc.ABCMeta):
         Returns the input unchanged if the input is already a member of the target category or if
         the transformation is not applicable."""
         ...
+
+    @property
+    def is_paraphrase(self) -> bool:
+        """Is this augmenter doing paraphrase."""
+        return len(self.categories) == 0
 
 
 class Variation(NamedTuple):

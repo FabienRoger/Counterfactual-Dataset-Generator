@@ -2,11 +2,13 @@
 # Adapted to be usable with InstructGPT
 #%%
 from typing import Dict, Tuple
+
 import openai
-from transformers import GPT2Tokenizer
-from countergen.config import OPENAI_API_KEY
 from attrs import define
+from countergen.config import OPENAI_API_KEY
+from countergen.tools.utils import estimate_paraphrase_length
 from countergen.types import Augmenter, Category, Input
+from transformers import GPT2Tokenizer
 
 openai.api_key = OPENAI_API_KEY
 
@@ -58,28 +60,10 @@ class LlmdAugmenter(Augmenter):
         completion = openai.Completion.create(
             engine=self.engine,
             prompt=prompt,
-            max_tokens=estimate_completion_length(inp),
+            max_tokens=estimate_paraphrase_length(inp),
             temperature=1,
             top_p=0.7,  # LLM-D has top_k=40, but not available
             stream=False,
         )["choices"][0]["text"]
 
         return completion.split("}")[0]
-
-
-def get_completion(prompt: str, engine: str = "text-babbage-001", max_tokens: int = 10):
-    completion = openai.Completion.create(
-        engine=engine,
-        prompt=prompt,
-        max_tokens=max_tokens,
-        temperature=1,
-        top_p=0.7,  # LLM-D has top_k=40, but not available
-        stream=False,
-    )
-    return completion["choices"][0]["text"]
-
-
-def estimate_completion_length(input: str):
-    average_token_length = 3
-    safety_margin = 50
-    return len(input) // average_token_length + safety_margin

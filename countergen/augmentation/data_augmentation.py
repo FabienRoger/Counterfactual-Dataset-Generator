@@ -100,31 +100,40 @@ class AugmentedDataset:
         return AugmentedDataset(samples)
 
 
-def generate_variations_pair(converter: Augmenter, ds: Dataset) -> AugmentedDataset:
-    augmented_samples = []
-    for sample in maybe_tqdm(ds.samples, VERBOSE >= 2):
-        variations = [
-            Variation(converter.convert_to(sample.input, category), (category,)) for category in converter.categories
-        ]
-        augmented_samples.append(SampleWithVariations.from_sample(sample, variations))
-    return AugmentedDataset(augmented_samples)
+def generate_variations(variation: Variation, augmenter: Augmenter) -> List[Variation]:
+    if augmenter.is_paraphrase:
+        return generate_paraphrase(variation, augmenter)
+
+    text, old_categories = variation
+    new_variations = [
+        Variation(augmenter.convert_to(text, category), old_categories + (category,))
+        for category in augmenter.categories
+    ]
+    if not all_same([v.text for v in new_variations]):
+        return new_variations
+    else:
+        return variation
+
+
+def generate_paraphrase(variation: Variation, augmenter: Augmenter) -> List[Variation]:
+    assert augmenter.is_paraphrase
+
+    text, old_categories = variation
+    new_text = augmenter.convert_to(text, "")
+    if new_text == text:
+        return variation
+    else:
+        return [variation, Variation(new_text, old_categories)]
 
 
 def generate_all_variations(augmenters: Iterable[Augmenter], ds: Dataset) -> AugmentedDataset:
     augmented_samples = []
     for sample in maybe_tqdm(ds.samples, VERBOSE >= 2):
         variations = [Variation(sample.input, ())]
-        for converter in augmenters:
+        for augmenter in augmenters:
             new_variations = []
-            for v, old_categories in variations:
-                converted = [
-                    Variation(converter.convert_to(v, category), old_categories + (category,))
-                    for category in converter.categories
-                ]
-                if not all_same([v.text for v in converted]):
-                    new_variations += converted
-                else:
-                    new_variations.append(Variation(v, old_categories))
+            for v in variations:
+                new_variations += generate_variations(v, augmenter)
             variations = new_variations
         augmented_samples.append(SampleWithVariations.from_sample(sample, variations))
     return AugmentedDataset(augmented_samples)
