@@ -1,6 +1,7 @@
+from inspect import unwrap
 import time
 from collections import Counter
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import torch
@@ -8,7 +9,7 @@ from countergen.config import VERBOSE
 from countergen.editing.activation_ds import ActivationsDataset
 from countergen.editing.models import fit_model, get_bottlenecked_linear, get_bottlenecked_mlp
 from countergen.tools.math_utils import orthonormalize
-from countergen.tools.utils import maybe_tqdm
+from countergen.tools.utils import maybe_tqdm, unwrap_or
 from torch import nn
 from torch.optim import SGD
 from torchmetrics import HingeLoss
@@ -61,6 +62,7 @@ def bottlenecked_mlp_span(ds: ActivationsDataset, n_dim: int = 8, n_training_ite
 
 def rlace(
     ds: ActivationsDataset,
+    dev_ds: Optional[ActivationsDataset] = None,
     n_dim: int = 1,
     device: str = "cpu",
     out_iters: int = 75000,
@@ -83,8 +85,8 @@ def rlace(
 ) -> torch.Tensor:
     """Compute directions using RLACE.
 
-    :param X: The input (np array)
-    :param Y: the lables (np array)
+    :param ds: An activation dataset containing the training data
+    :param dev_ds: An activation dataset containing the validation data. If None, use training data.
     :param n_dim: Number of dimensions to neutralize from the input.
     :param device:
     :param out_iters: Number of batches to run
@@ -180,6 +182,9 @@ def rlace(
     y_torch = ds.y_data.to(device)
     X_np = X_torch.numpy()
     y_np = y_torch.numpy()
+    dev_ds = unwrap_or(dev_ds, ds)
+    X_dev_np = dev_ds.x_data.numpy()
+    y_dev_np = dev_ds.y_data.numpy()
 
     num_labels = len(set(y_np.tolist()))
     if num_labels == 2:
@@ -239,7 +244,7 @@ def rlace(
 
         if i % evalaute_every == 0:
             # pbar.set_description("Evaluating current adversary...")
-            loss_val, score = get_score(X_np, y_np, X_np, y_np, P.detach().cpu().numpy(), n_dim)
+            loss_val, score = get_score(X_np, y_np, X_dev_np, y_dev_np, P.detach().cpu().numpy(), n_dim)
             if loss_val > best_loss:  # if np.abs(score - maj) < np.abs(best_score - maj):
                 best_P, best_loss = symmetric(P).detach().cpu().numpy().copy(), loss_val
             if np.abs(score - maj) < np.abs(best_score - maj):
