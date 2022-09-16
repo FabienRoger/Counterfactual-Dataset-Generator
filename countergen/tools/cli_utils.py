@@ -1,4 +1,16 @@
-def _overwrite_fire_help_text():  # type: ignore
+from typing import Any, Optional
+
+
+def get_argument(argument: Any, default: str) -> Optional[str]:
+    if isinstance(argument, bool) and argument:
+        return default
+    elif isinstance(argument, str):
+        return argument
+    else:
+        return
+
+
+def overwrite_fire_help_text():  # type: ignore
     import inspect
     import fire  # type: ignore
     from fire import inspectutils  # type: ignore

@@ -7,4 +7,7 @@ from countergen.evaluation.aggregators import (
 )
 
 from countergen.evaluation.generative_models import get_evaluator_for_generative_model
-from countergen.evaluation.classification_models import get_evaluator_for_classification_pipline
+from countergen.evaluation.classification_models import (
+    get_evaluator_for_classification_pipline,
+    get_evaluator_for_classification_model,
+)

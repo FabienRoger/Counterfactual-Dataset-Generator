@@ -1,16 +1,19 @@
 from typing import List, Optional, Union
 
 import fire  # type: ignore
-
-from countergen.evaluation import get_evaluator_for_classification_pipline, get_evaluator_for_generative_model
-from countergen.augmentation import SimpleAugmenter, AugmentedDataset, Dataset
-from countergen.augmentation.simple_augmenter import default_converter_paths
-from countergen.evaluation import evaluate_and_print
-from countergen.tools.cli_utils import _overwrite_fire_help_text
-from countergen.tools.utils import get_device, unwrap_or
-from countergen.types import Augmenter
-
 import torch
+
+from countergen.augmentation import AugmentedDataset, Dataset, SimpleAugmenter
+from countergen.augmentation.simple_augmenter import default_converter_paths
+from countergen.evaluation import (
+    evaluate_and_print,
+    get_evaluator_for_classification_model,
+    get_evaluator_for_classification_pipline,
+    get_evaluator_for_generative_model,
+)
+from countergen.tools.cli_utils import get_argument, overwrite_fire_help_text
+from countergen.tools.utils import get_device
+from countergen.types import Augmenter
 
 
 def augment(load_path: str, save_path: str, *augmenters_desc: str):
@@ -55,7 +58,9 @@ def evaluate(
     load_path: str,
     save_path: Optional[str] = None,
     hf_gpt_model: Union[None, bool, str] = None,
+    hf_classifier_pipeline: Union[None, bool, str] = None,
     hf_classifier_model: Union[None, bool, str] = None,
+    labels: Optional[str] = None,
 ):
     """Evaluate the provided model.
 
@@ -63,9 +68,13 @@ def evaluate(
     - load-path: the path to the augmented dataset
     - save-path: Optional flag. If present, save the results to the provided path. Otherwise, print the results
     - hf-gpt-model: Optional flag. Use the model given after the flag, or distillgpt2 is none is provided
-    - hf-classifier-model: Optional flag. Use the model given after the flag,
+    - hf-classifier-pipeline: Optional flag. Use the pipeline given after the flag,
                            or cardiffnlp/twitter-roberta-base-sentiment-latest is none is provided
-                           If a model is provided, it should be compatible with the sentiment-analysis pipeline.
+                           If a pipeline is provided, it should be compatible with the sentiment-analysis pipeline.
+    - hf-classifier-pipeline: Optional flag. Use the model given after the flag,
+                           or Hate-speech-CNERG/dehatebert-mono-english is none is provided
+                           If a model is provided, it should be loadable with AutoModelForSequenceClassification
+                           and the --labels flag should be passed, with as arguments "/"-separated labels (in the order of logits).
 
     Note: the augmented dataset should match the kind of network you evaluate! See the docs [LINK] for more info.
 
@@ -74,18 +83,17 @@ def evaluate(
       (use distillgpt2 and save the results)
     - countergen evaluate LOAD_PATH --hf-gpt-model gpt2-small
       (use gpt2-small and print the results)
-    - countergen evaluate LOAD_PATH --hf-classifier-model
+    - countergen evaluate LOAD_PATH --hf-classifier-pipeline
       (use cardiffnlp/twitter-roberta-base-sentiment-latest and print the results)
+    - countergen evaluate LOAD_PATH --hf_classifier_model --labels hate/noHate
+      (use Hate-speech-CNERG/dehatebert-mono-english and print the results)
     """
 
     ds = AugmentedDataset.from_jsonl(load_path)
     if hf_gpt_model is not None:
-        if isinstance(hf_gpt_model, bool) and hf_gpt_model:
-            model_name = "distilgpt2"
-        elif isinstance(hf_gpt_model, str):
-            model_name = hf_gpt_model
-        else:
-            print("Invalid model")
+        model_name = get_argument(hf_gpt_model, default="distilgpt2")
+        if model_name is None:
+            print(f"Invalid model {model_name}")
             return
 
         from transformers import GPT2LMHeadModel
@@ -93,23 +101,31 @@ def evaluate(
         device = get_device()
         model: torch.nn.Module = GPT2LMHeadModel.from_pretrained(model_name).to(device)
         model_ev = get_evaluator_for_generative_model(model, "probability")
-    elif hf_classifier_model is not None:
-        if isinstance(hf_gpt_model, bool) and hf_gpt_model:
-            model_name = "cardiffnlp/twitter-roberta-base-sentiment-latest"
-        elif isinstance(hf_gpt_model, str):
-            model_name = hf_gpt_model
-        else:
-            print("Invalid model")
+    elif hf_classifier_pipeline is not None:
+        pipeline_name = get_argument(hf_classifier_pipeline, default="cardiffnlp/twitter-roberta-base-sentiment-latest")
+        if pipeline_name is None:
+            print(f"Invalid pipeline {pipeline_name}")
             return
 
         import transformers
         from transformers import pipeline
 
         transformers.logging.set_verbosity_error()
-        sentiment_task_pipeline = pipeline("sentiment-analysis", model=model_name, tokenizer=model_name)
+        sentiment_task_pipeline = pipeline("sentiment-analysis", model=pipeline_name, tokenizer=pipeline_name)
         model_ev = get_evaluator_for_classification_pipline(sentiment_task_pipeline)
+    elif hf_classifier_model is not None:
+        model_name = get_argument(hf_classifier_model, default="Hate-speech-CNERG/dehatebert-mono-english")
+        if model_name is None:
+            print(f"Invalid model {model_name}")
+            return
+
+        from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForSequenceClassification.from_pretrained(model_name)
+        model_ev = get_evaluator_for_classification_model(model, tokenizer, labels.split("/"))
     else:
-        print("Please provide either hf-gpt-model or hf-gpt-model")
+        print("Please provide either hf-gpt-model or hf-classifier-pipeline or hf_classifier_model")
         return
 
     evaluate_and_print(ds.samples, model_ev)
@@ -119,7 +135,7 @@ def evaluate(
 
 
 def run():
-    _overwrite_fire_help_text()
+    overwrite_fire_help_text()
     fire.Fire(
         {
             "augment": augment,
@@ -138,3 +154,4 @@ if __name__ == "__main__":
     # python -m countergen evaluate countergen\data\augdatasets\tiny-test.jsonl --hf_gpt_model
     # python -m countergen evaluate tests_saves/testtwit2.jsonl --hf_classifier_model
     # python -m countergen evaluate countergen\data\augdatasets\doublebind.jsonl --hf_gpt_model
+    # python -m countergen evaluate countergen\data\augdatasets\hate-test.jsonl --hf_classifier_model --labels hate/noHate
