@@ -1,7 +1,7 @@
 import json
 from optparse import Option
 import sys
-from typing import Optional
+from typing import List, Optional
 
 import fire  # type: ignore
 import pandas as pd
@@ -12,8 +12,8 @@ def load(
     save_path: str,
     input_col: str,
     output_col: str,
-    headers: Optional[list[str]] = None,
-    accepted_outputs: Optional[list[str]] = None,
+    headers: Optional[List[str]] = None,
+    accepted_outputs: Optional[List[str]] = None,
 ):
     """Transform a csv dataset into a jsonl dataset.
 
