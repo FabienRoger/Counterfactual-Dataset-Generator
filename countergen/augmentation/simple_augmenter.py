@@ -84,7 +84,7 @@ class SimpleAugmenter(Augmenter):
 
         return SimpleAugmenter(ds.categories, correspondance_dict)
 
-    def convert_to(self, inp: Input, to: Category) -> Input:
+    def transform(self, inp: Input, to: Category) -> Input:
         from_category = other(self.categories, to)
         doc = self.nlp(inp)
         r = ""

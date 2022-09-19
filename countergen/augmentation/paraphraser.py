@@ -37,7 +37,7 @@ class Paraphraser(Augmenter):
     def categories(self) -> Tuple[Category, ...]:
         return ()
 
-    def convert_to(self, inp: Input, to: Category) -> Input:
+    def transform(self, inp: Input, to: Category) -> Input:
         prompt = self.prompt_template.replace("__input__", inp)
 
         completion = openai.Completion.create(

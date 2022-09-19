@@ -53,7 +53,7 @@ class LlmdAugmenter(Augmenter):
     def categories(self) -> Tuple[Category, ...]:
         return tuple(self.categories_instructions.keys())
 
-    def convert_to(self, inp: Input, to: Category) -> Input:
+    def transform(self, inp: Input, to: Category) -> Input:
         instruction = self.categories_instructions[to]
         prompt = self.prompt_template.replace("__input__", inp).replace("__instruction__", instruction)
 

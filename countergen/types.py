@@ -31,11 +31,13 @@ class Augmenter(metaclass=abc.ABCMeta):
         ...
 
     @abc.abstractmethod
-    def convert_to(self, inp: Input, to: Category) -> Input:
+    def transform(self, inp: Input, to: Category = "") -> Input:
         """Transform the input to make it a member of the target category.
 
         Returns the input unchanged if the input is already a member of the target category or if
-        the transformation is not applicable."""
+        the transformation is not applicable.
+
+        The to argument doesn't need to be used for paraphrase."""
         ...
 
     @property
