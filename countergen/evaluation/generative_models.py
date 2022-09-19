@@ -1,6 +1,6 @@
 from functools import lru_cache
 from math import exp
-from typing import TYPE_CHECKING, Callable, Iterable, List, Optional, Tuple
+from typing import TYPE_CHECKING, Callable, Sequence, List, Optional, Tuple
 
 import openai
 import torch
@@ -12,7 +12,9 @@ from transformers import BatchEncoding, GPT2LMHeadModel, GPT2Tokenizer
 metrics = ["perplexity", "probability"]
 
 LogProbs = float
-GenerativeModel = Callable[[Input, Output], List[LogProbs]]  # Return a log prob for each output
+
+# Return a log prob for each token of output
+GenerativeModel = Callable[[Input, Output], Sequence[Sequence[LogProbs]]]
 
 
 def pt_to_generative_model(model: torch.nn.Module) -> GenerativeModel:
@@ -23,7 +25,7 @@ def pt_to_generative_model(model: torch.nn.Module) -> GenerativeModel:
 
     tokenizer = get_gpt_tokenizer()
 
-    def gen_model(inp, out) -> List[float]:
+    def gen_model(inp: Input, out: Output) -> List[List[float]]:
         tokens_inp = tokenizer(inp, return_tensors="pt").to(model.device)
         token_outs = [tokenizer(o, return_tensors="pt").to(model.device) for o in out]
 
@@ -37,7 +39,7 @@ def api_to_generative_model(openai_engine: str = "text-ada-001") -> GenerativeMo
 
     The GenerativeModel costs ~ len(input) * (sum of len(ouput)) tokens per call."""
 
-    def gen_model(inp, out) -> List[float]:
+    def gen_model(inp: Input, out: Output) -> List[List[float]]:
         correct_log_probs_list = []
         for o in out:
             completion = openai.Completion.create(
@@ -58,8 +60,8 @@ def api_to_generative_model(openai_engine: str = "text-ada-001") -> GenerativeMo
             n_toks = len(token_offsets)
             start_of_output = max([i for i in range(n_toks) if token_offsets[i] <= len(inp)])
 
-            output_logprob = sum(token_logprobs[start_of_output:])
-            correct_log_probs_list.append(output_logprob)
+            correct_log_probs_list.append(token_logprobs[start_of_output:])
+        return correct_log_probs_list
 
     return gen_model
 
@@ -81,9 +83,9 @@ def get_evaluator_for_generative_model(model: GenerativeModel, metric: str = "pr
         total_log_prob: float = 0
         number_of_toks: int = 0
         for correct_log_probs in correct_log_probs_list:
-            total_prob += exp(correct_log_probs.sum().item())
+            total_prob += exp(sum(correct_log_probs))
             number_of_toks += len(correct_log_probs)
-            total_log_prob += correct_log_probs.sum().item()
+            total_log_prob += sum(correct_log_probs)
 
         if metric == "perplexity":
             return exp(-total_log_prob / number_of_toks)
@@ -96,14 +98,14 @@ def get_evaluator_for_generative_model(model: GenerativeModel, metric: str = "pr
 
 def get_correct_logprobs(
     tokens_inp: BatchEncoding, token_outs: List[BatchEncoding], model: torch.nn.Module
-) -> List[torch.Tensor]:
+) -> List[List[float]]:
 
     if all([o["input_ids"].shape[-1] == 1 for o in token_outs]):
         return get_correct_1tok_logprobs(tokens_inp, token_outs, model)
 
     inp_length = tokens_inp["input_ids"].shape[-1]
 
-    result: List[torch.Tensor] = []
+    result: List[List[float]] = []
 
     for tokens_out in token_outs:
         out_length = tokens_out["input_ids"].shape[-1]
@@ -117,7 +119,7 @@ def get_correct_logprobs(
         assert len(log_probs) == len(tokens_out["input_ids"][0])
         correct_log_probs = torch.gather(log_probs, 1, tokens_out["input_ids"][0, :, None])[:, 0]
 
-        result.append(correct_log_probs)
+        result.append([x.item() for x in correct_log_probs])
 
     return result
 
