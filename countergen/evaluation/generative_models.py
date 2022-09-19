@@ -1,6 +1,6 @@
 from functools import lru_cache
 from math import exp
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Callable, Iterable, List, Optional, Tuple
 
 import torch
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, BatchEncoding
@@ -11,18 +11,19 @@ from countergen.tools.math_utils import perplexity
 
 metrics = ["perplexity", "probability"]
 
+LogProbs = float
+GenerativeModel = Callable[[Input, Output], List[LogProbs]]  # Return a log prob for each output
 
-def get_evaluator_for_generative_model(model: torch.nn.Module, metric: str = "probability") -> ModelEvaluator:
-    """Return the ModelEvaluator corresponding to the model & the metric.
 
-    The model should take {"input_ids": [tensor], "attention_mask": [tensor]} as input.
+def pt_to_generative_model(model: torch.nn.Module) -> GenerativeModel:
+    """Make a GenerativeModel out of a pytorch model.
 
-    Available metrics: probability, perplexity"""
+    The model should take {"input_ids": [tensor], "attention_mask": [tensor]} as input,
+    and return something that has a "logits" attribute."""
+
     tokenizer = get_gpt_tokenizer()
 
-    def run(inp: Input, out: Output) -> Performance:
-        if len(out) == 0:
-            raise ValueError("Expected output should be provided for gpt models")
+    def gen_model(inp, out) -> List[float]:
 
         tokens_inp = tokenizer(inp, return_tensors="pt").to(model.device)
         inp_length = tokens_inp["input_ids"].shape[-1]
@@ -30,7 +31,21 @@ def get_evaluator_for_generative_model(model: torch.nn.Module, metric: str = "pr
 
         token_outs = [tokenizer(o, return_tensors="pt").to(model.device) for o in out]
 
-        correct_log_probs_list = get_correct_logprobs(tokens_inp, token_outs, model)
+        return get_correct_logprobs(tokens_inp, token_outs, model)
+
+    return gen_model
+
+
+def get_evaluator_for_generative_model(model: GenerativeModel, metric: str = "probability") -> ModelEvaluator:
+    """Return the ModelEvaluator corresponding to the model & the metric.
+
+    Available metrics: probability & perplexity"""
+
+    def run(inp: Input, out: Output) -> Performance:
+        if len(out) == 0:
+            raise ValueError("Expected output should be provided for gpt models")
+
+        correct_log_probs_list = model(inp, out)
 
         total_prob: float = 0
         total_log_prob: float = 0

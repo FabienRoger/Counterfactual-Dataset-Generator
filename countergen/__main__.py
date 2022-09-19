@@ -11,6 +11,7 @@ from countergen.evaluation import (
     get_evaluator_for_classification_pipline,
     get_evaluator_for_generative_model,
 )
+from countergen.evaluation.generative_models import pt_to_generative_model
 from countergen.tools.cli_utils import get_argument, overwrite_fire_help_text
 from countergen.tools.utils import get_device
 from countergen.types import Augmenter
@@ -100,7 +101,7 @@ def evaluate(
 
         device = get_device()
         model: torch.nn.Module = GPT2LMHeadModel.from_pretrained(model_name).to(device)
-        model_ev = get_evaluator_for_generative_model(model, "probability")
+        model_ev = get_evaluator_for_generative_model(pt_to_generative_model(model), "probability")
     elif hf_classifier_pipeline is not None:
         pipeline_name = get_argument(hf_classifier_pipeline, default="cardiffnlp/twitter-roberta-base-sentiment-latest")
         if pipeline_name is None:
