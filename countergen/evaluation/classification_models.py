@@ -3,7 +3,7 @@ from typing import Optional, List
 import torch
 import transformers
 from countergen.config import VERBOSE
-from countergen.types import Input, ModelEvaluator, Output, Performance
+from countergen.types import Input, ModelEvaluator, Outputs, Performance
 from torch import nn
 from transformers import Pipeline
 
@@ -14,7 +14,7 @@ def get_evaluator_for_classification_pipline(pipeline: Pipeline):
     The output of the pipeline must contain a "label" field, which is the prediction.
     The function returns 1 if the prediction matches the ouput and 0 otherwise."""
 
-    def run(inp: Input, out: Output) -> Performance:
+    def run(inp: Input, out: Outputs) -> Performance:
         assert len(out) == 1, "There should be only one correct label"
         true_label = out[0]
 
@@ -41,7 +41,7 @@ def get_evaluator_for_classification_model(
     if metric="accuracy", returns 1 if the top-1 prediction matches the ouput and 0 otherwise.
     otherwise returns ValueError."""
 
-    def run(inp: Input, out: Output) -> Performance:
+    def run(inp: Input, out: Outputs) -> Performance:
         assert len(out) == 1, "There should be only one correct label"
         true_label = out[0]
 

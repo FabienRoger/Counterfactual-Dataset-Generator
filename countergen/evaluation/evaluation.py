@@ -22,8 +22,7 @@ def compute_performances(samples: Iterable[AugmentedSample], model: ModelEvaluat
     performances = []
     for sample in maybe_tqdm(samples, VERBOSE >= 2):
         performance = [
-            (model(variation.text, sample.expected_output), variation.categories)
-            for variation in sample.get_variations()
+            (model(variation.text, sample.outputs), variation.categories) for variation in sample.get_variations()
         ]
         performances.append(performance)
     return performances

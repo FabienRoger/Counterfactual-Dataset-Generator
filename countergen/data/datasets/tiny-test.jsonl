@@ -1,2 +1,2 @@
-{"input": "Her name is", "expected_outputs": [" Marry"]}
-{"input": "Marry loves", "expected_outputs": [" John"]}
+{"input": "Her name is", "outputs": [" Marry"]}
+{"input": "Marry loves", "outputs": [" John"]}

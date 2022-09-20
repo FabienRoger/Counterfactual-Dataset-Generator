@@ -8,7 +8,7 @@ from attrs import define
 
 from countergen.config import VERBOSE
 from countergen.augmentation.simple_augmenter import SimpleAugmenter
-from countergen.types import AugmentedSample, Category, Augmenter, Input, Output, Variation
+from countergen.types import AugmentedSample, Category, Augmenter, Input, Outputs, Variation
 from countergen.tools.utils import all_same, maybe_tqdm
 from countergen.config import MODULE_PATH
 
@@ -22,12 +22,15 @@ default_dataset_paths: Mapping[str, str] = {
 @define
 class Sample:
     input: Input
-    expected_output: Output = []
+    outputs: Outputs = []
 
     @classmethod
     def from_json_dict(cls, json_dict):
-        expected_output = json_dict["expected_outputs"] if "expected_outputs" in json_dict else []
-        return Sample(json_dict["input"], expected_output)
+        outputs = json_dict["outputs"] if "outputs" in json_dict else []
+        return Sample(json_dict["input"], outputs)
+
+    def to_json_dict(self) -> OrderedDict:
+        return {"input": self.input, "outputs": self.outputs}
 
 
 @define
@@ -39,22 +42,22 @@ class SampleWithVariations(Sample, AugmentedSample):
     def get_variations(self) -> Sequence[Variation]:
         return self.variations
 
-    def get_expected_output(self) -> Output:
-        return self.expected_output
+    def get_outputs(self) -> Outputs:
+        return self.outputs
 
     @classmethod
     def from_sample(cls, s: Sample, variations: List[Variation] = []):
-        return SampleWithVariations(s.input, s.expected_output, variations)
+        return SampleWithVariations(s.input, s.outputs, variations)
 
     @classmethod
     def from_json_dict(cls, json_dict):
-        expected_output = json_dict["expected_outputs"] if "expected_outputs" in json_dict else []
+        outputs = json_dict["outputs"] if "outputs" in json_dict else []
         variations = [Variation(v["text"], tuple(v["categories"])) for v in json_dict["variations"]]
-        return SampleWithVariations(json_dict["input"], expected_output, variations)
+        return SampleWithVariations(json_dict["input"], outputs, variations)
 
     def to_json_dict(self) -> OrderedDict:
         d: OrderedDict[str, Any] = OrderedDict({"input": self.input})
-        d["expected_outputs"] = self.expected_output
+        d["outputs"] = self.outputs
         d["variations"] = [{"text": text, "categories": list(categories)} for text, categories in self.variations]
         return d
 

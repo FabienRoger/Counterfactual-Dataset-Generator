@@ -6,7 +6,7 @@ import openai
 import torch
 from countergen.tools.math_utils import perplexity
 from countergen.tools.utils import concat_dicts, get_device, get_gpt_tokenizer, remove_last_tok, unwrap_or
-from countergen.types import Input, ModelEvaluator, Output, Performance
+from countergen.types import Input, ModelEvaluator, Outputs, Performance
 from transformers import BatchEncoding, GPT2LMHeadModel, GPT2Tokenizer
 
 metrics = ["perplexity", "probability"]
@@ -14,7 +14,7 @@ metrics = ["perplexity", "probability"]
 LogProbs = float
 
 # Return a log prob for each token of output
-GenerativeModel = Callable[[Input, Output], Sequence[Sequence[LogProbs]]]
+GenerativeModel = Callable[[Input, Outputs], Sequence[Sequence[LogProbs]]]
 
 
 def pt_to_generative_model(model: torch.nn.Module) -> GenerativeModel:
@@ -25,7 +25,7 @@ def pt_to_generative_model(model: torch.nn.Module) -> GenerativeModel:
 
     tokenizer = get_gpt_tokenizer()
 
-    def gen_model(inp: Input, out: Output) -> List[List[float]]:
+    def gen_model(inp: Input, out: Outputs) -> List[List[float]]:
         tokens_inp = tokenizer(inp, return_tensors="pt").to(model.device)
         token_outs = [tokenizer(o, return_tensors="pt").to(model.device) for o in out]
 
@@ -39,7 +39,7 @@ def api_to_generative_model(openai_engine: str = "text-ada-001") -> GenerativeMo
 
     The GenerativeModel costs ~ len(input) * (sum of len(ouput)) tokens per call."""
 
-    def gen_model(inp: Input, out: Output) -> List[List[float]]:
+    def gen_model(inp: Input, out: Outputs) -> List[List[float]]:
         correct_log_probs_list = []
         for o in out:
             completion = openai.Completion.create(
@@ -71,7 +71,7 @@ def get_evaluator_for_generative_model(model: GenerativeModel, metric: str = "pr
 
     Available metrics: probability & perplexity"""
 
-    def run(inp: Input, out: Output) -> Performance:
+    def run(inp: Input, out: Outputs) -> Performance:
         if len(out) == 0:
             raise ValueError("Expected output should be provided for gpt models")
         if len(inp) == 0:

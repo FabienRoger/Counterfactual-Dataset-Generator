@@ -14,10 +14,10 @@ from typing import (
 )
 
 Input = str  # The input to an NLP mode
-Output = List[str]  # The different acceptable outputs of the NLP, string label or number, but in string format
+Outputs = List[str]  # The different acceptable outputs of the NLP, string label or number, but in string format
 
 Performance = float  # usually between zero & one (one is better)
-ModelEvaluator = Callable[[Input, Output], Performance]
+ModelEvaluator = Callable[[Input, Outputs], Performance]
 
 Category = str  # The different kinds of data produced by augmenters.
 
@@ -57,7 +57,7 @@ class AugmentedSample(metaclass=abc.ABCMeta):
         ...
 
     @abc.abstractproperty
-    def expected_output(self) -> Output:
+    def outputs(self) -> Outputs:
         ...
 
     @abc.abstractmethod
