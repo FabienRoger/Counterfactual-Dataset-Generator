@@ -6,10 +6,8 @@ from typing import Dict, Tuple
 import openai
 from attrs import define
 from countergen.config import OPENAI_API_KEY
-from countergen.tools.utils import estimate_paraphrase_length
+from countergen.tools.utils import estimate_paraphrase_length, set_and_check_oai_key
 from countergen.types import Augmenter, Category, Input
-
-openai.api_key = OPENAI_API_KEY
 
 DEFAULT_AUGMENTERS = {
     "gender": {
@@ -53,6 +51,8 @@ class LlmdAugmenter(Augmenter):
         return tuple(self.categories_instructions.keys())
 
     def transform(self, inp: Input, to: Category) -> Input:
+        set_and_check_oai_key()
+
         instruction = self.categories_instructions[to]
         prompt = self.prompt_template.replace("__input__", inp).replace("__instruction__", instruction)
 

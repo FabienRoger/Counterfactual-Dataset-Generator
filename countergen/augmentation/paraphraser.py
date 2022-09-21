@@ -3,10 +3,9 @@ from typing import Dict, Tuple
 import openai
 from attrs import define
 from countergen.config import OPENAI_API_KEY
-from countergen.tools.utils import estimate_paraphrase_length
+from countergen.tools.utils import estimate_paraphrase_length, set_and_check_oai_key
 from countergen.types import Augmenter, Category, Input, Paraphraser
 
-openai.api_key = OPENAI_API_KEY
 
 # Examples from https://www.pragnakalp.com/intent-classification-paraphrasing-examples-using-gpt-3/
 DEFAULT_TEMPLATE = """Paraphrase the original passage.
@@ -33,6 +32,8 @@ class LlmParaphraser(Paraphraser):
     engine: str = "text-davinci-002"
 
     def transform(self, inp: Input, to: Category = "") -> Input:
+        set_and_check_oai_key()
+
         prompt = self.prompt_template.replace("__input__", inp)
 
         completion = openai.Completion.create(

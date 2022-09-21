@@ -3,6 +3,9 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Mapping, Optional, Sequence, TypeVar, Tuple
 
 from tqdm import tqdm  # type: ignore
+import openai
+
+from countergen.config import OPENAI_API_KEY
 
 T = TypeVar("T")
 
@@ -36,3 +39,10 @@ def estimate_paraphrase_length(text: str):
     average_token_length = 3
     safety_margin = 50
     return len(text) // average_token_length + safety_margin
+
+
+def set_and_check_oai_key(key: Optional[str] = OPENAI_API_KEY):
+    if key is None:
+        raise RuntimeError(
+            "Please provide openai key to use its api! Use `countergen.config.OPENAI_API_KEY = YOUR_KEY`"
+        )

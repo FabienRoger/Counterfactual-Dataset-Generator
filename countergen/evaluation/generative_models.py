@@ -2,6 +2,7 @@ from math import exp
 from typing import TYPE_CHECKING, Callable, Sequence, List, Optional, Tuple
 
 import openai
+from countergen.tools.utils import set_and_check_oai_key
 from countergen.types import Input, ModelEvaluator, Outputs, Performance
 
 metrics = ["perplexity", "probability"]
@@ -18,6 +19,9 @@ def api_to_generative_model(openai_engine: str = "text-ada-001") -> GenerativeMo
     The GenerativeModel costs ~ len(input) * (sum of len(ouput)) tokens per call."""
 
     def gen_model(inp: Input, out: Outputs) -> List[List[float]]:
+
+        set_and_check_oai_key()
+
         correct_log_probs_list = []
         for o in out:
             completion = openai.Completion.create(
