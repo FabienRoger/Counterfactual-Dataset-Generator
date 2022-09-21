@@ -2,13 +2,15 @@ from typing import List, Optional, Union
 
 import fire  # type: ignore
 
-from countergen.augmentation import AugmentedDataset, Dataset, SimpleAugmenter
-from countergen.augmentation.simple_augmenter import DEFAULT_CONVERTERS_PATHS
-from countergen.evaluation import (
+from countergen import (
+    DEFAULT_CONVERTERS_PATHS,
+    AugmentedDataset,
+    Dataset,
+    SimpleAugmenter,
+    api_to_generative_model,
     evaluate_and_print,
     get_generative_model_evaluator,
 )
-from countergen.evaluation.generative_models import api_to_generative_model
 from countergen.tools.cli_utils import overwrite_fire_help_text
 from countergen.types import Augmenter
 
