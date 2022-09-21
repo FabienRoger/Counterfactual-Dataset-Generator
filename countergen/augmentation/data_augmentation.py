@@ -115,7 +115,7 @@ def generate_variations(variation: Variation, augmenter: Augmenter) -> List[Vari
     if not all_same([v.text for v in new_variations]):
         return new_variations
     else:
-        return variation
+        return [variation]
 
 
 def generate_paraphrase(variation: Variation, augmenter: Augmenter) -> List[Variation]:
@@ -124,7 +124,7 @@ def generate_paraphrase(variation: Variation, augmenter: Augmenter) -> List[Vari
     text, old_categories = variation
     new_text = augmenter.transform(text)
     if new_text == text:
-        return variation
+        return [variation]
     else:
         return [variation, Variation(new_text, old_categories)]
 
