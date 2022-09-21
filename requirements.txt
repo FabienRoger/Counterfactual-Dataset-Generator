@@ -1,7 +1,6 @@
 attrs>=22
 fire>=0.4
 python-dotenv>=0.21
-spacy>=3.4
 torch>=1.11
 tqdm>=4
 transformers>=4

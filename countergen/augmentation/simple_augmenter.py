@@ -4,7 +4,7 @@ from pathlib import Path
 from random import choice
 from typing import Callable, DefaultDict, Dict, Iterable, List, Mapping, OrderedDict, Sequence, Tuple
 
-import spacy
+import re
 from attrs import define
 
 from countergen.types import Category, Augmenter, Input
@@ -46,7 +46,7 @@ DEFAULT_TRANSFORMATIONS = [
 class SimpleAugmenter(Augmenter):
     categories: Tuple[Category, Category]
     correspondance_dict: CorrespondanceDict
-    nlp: spacy.language.Language = spacy.load("en_core_web_sm")
+    word_regex: str = r"([A-Za-zÀ-ÖØ-öø-ÿ]+\-[A-Za-zÀ-ÖØ-öø-ÿ]+)|[A-Za-zÀ-ÖØ-öø-ÿ]+"
 
     @classmethod
     def from_default(cls, name: str = "gender"):
@@ -86,11 +86,15 @@ class SimpleAugmenter(Augmenter):
 
     def transform(self, inp: Input, to: Category) -> Input:
         from_category = other(self.categories, to)
-        doc = self.nlp(inp)
-        r = ""
-        position_in_text = 0
-        for t in doc:
-            if self.correspondance_dict[from_category][t.text]:
-                r += doc.text[position_in_text : t.idx] + choice(self.correspondance_dict[from_category][t.text])
-                position_in_text = t.idx + len(t)
-        return r + doc.text[position_in_text:]
+        p = re.compile(self.word_regex)
+        new_inp_pieces = []
+        end = 0
+        for group in p.finditer(inp):
+            word = inp[group.start() : group.end()]
+            if self.correspondance_dict[from_category][word]:
+                new_inp_pieces.append(inp[end : group.start()])
+                new_inp_pieces.append(choice(self.correspondance_dict[from_category][word]))
+                end = group.end()
+
+        new_inp_pieces.append(inp[end:])
+        return "".join(new_inp_pieces)
