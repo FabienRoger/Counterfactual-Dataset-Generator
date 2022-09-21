@@ -101,7 +101,7 @@ def get_correct_logprobs(
 ) -> List[List[float]]:
 
     if all([o["input_ids"].shape[-1] == 1 for o in token_outs]):
-        return get_correct_1tok_logprobs(tokens_inp, token_outs, model)
+        return [[x.item() for x in t] for t in get_correct_1tok_logprobs(tokens_inp, token_outs, model)]
 
     inp_length = tokens_inp["input_ids"].shape[-1]
 

@@ -35,19 +35,12 @@ class Augmenter(metaclass=abc.ABCMeta):
         ...
 
     @abc.abstractmethod
-    def transform(self, inp: Input, to: Category = "") -> Input:
+    def transform(self, inp: Input, to: Category) -> Input:
         """Transform the input to make it a member of the target category.
 
         Return the input unchanged if the input is already a member of the target category or if
-        the transformation is not applicable.
-
-        The to argument doesn't need to be used for paraphrase."""
+        the transformation is not applicable."""
         ...
-
-    @property
-    def is_paraphrase(self) -> bool:
-        """Is this augmenter doing paraphrase."""
-        return len(self.categories) == 0
 
 
 class Paraphraser(Augmenter):
@@ -63,10 +56,6 @@ class Paraphraser(Augmenter):
     @property
     def categories(self) -> Tuple[Category, ...]:
         return ()
-
-    @property
-    def is_paraphrase(self) -> bool:
-        return True
 
 
 class Variation(NamedTuple):

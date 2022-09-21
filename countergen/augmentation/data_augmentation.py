@@ -2,13 +2,13 @@ import json
 from ast import Or
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Iterable, List, Mapping, NamedTuple, Optional, Sequence, Union
+from typing import Any, Iterable, List, Mapping, NamedTuple, Optional, Sequence, Union, cast
 
 from attrs import define
 
 from countergen.config import VERBOSE
 from countergen.augmentation.simple_augmenter import SimpleAugmenter
-from countergen.types import AugmentedSample, Category, Augmenter, Input, Outputs, Variation
+from countergen.types import AugmentedSample, Category, Augmenter, Input, Outputs, Paraphraser, Variation
 from countergen.tools.utils import all_same, maybe_tqdm
 from countergen.config import MODULE_PATH
 
@@ -30,7 +30,7 @@ class Sample:
         return Sample(json_dict["input"], outputs)
 
     def to_json_dict(self) -> OrderedDict:
-        return {"input": self.input, "outputs": self.outputs}
+        return OrderedDict({"input": self.input, "outputs": self.outputs})
 
 
 @define
@@ -104,8 +104,8 @@ class AugmentedDataset:
 
 
 def generate_variations(variation: Variation, augmenter: Augmenter) -> List[Variation]:
-    if augmenter.is_paraphrase:
-        return generate_paraphrase(variation, augmenter)
+    if isinstance(augmenter, Paraphraser):
+        return generate_paraphrase(variation, cast(Paraphraser, augmenter))
 
     text, old_categories = variation
     new_variations = [
@@ -118,9 +118,7 @@ def generate_variations(variation: Variation, augmenter: Augmenter) -> List[Vari
         return [variation]
 
 
-def generate_paraphrase(variation: Variation, augmenter: Augmenter) -> List[Variation]:
-    assert augmenter.is_paraphrase
-
+def generate_paraphrase(variation: Variation, augmenter: Paraphraser) -> List[Variation]:
     text, old_categories = variation
     new_text = augmenter.transform(text)
     if new_text == text:
