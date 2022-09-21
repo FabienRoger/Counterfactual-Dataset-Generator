@@ -1,14 +1,13 @@
 from typing import Optional, List
 
 import torch
-import transformers
 from countergen.config import VERBOSE
 from countergen.types import Input, ModelEvaluator, Outputs, Performance
 from torch import nn
 from transformers import Pipeline
 
 
-def get_evaluator_for_classification_pipline(pipeline: Pipeline):
+def get_classification_pipline_evaluator(pipeline: Pipeline) -> ModelEvaluator:
     """Returns a function which evaluate the pipeline on a (input,output) pair.
 
     The output of the pipeline must contain a "label" field, which is the prediction.
@@ -29,9 +28,9 @@ def get_evaluator_for_classification_pipline(pipeline: Pipeline):
     return run
 
 
-def get_evaluator_for_classification_model(
+def get_classification_model_evaluator(
     model: nn.Module, tokenizer, labels: List[str], metric: str = "correct_prob"
-):
+) -> ModelEvaluator:
     """Returns a function which evaluate the model on a (input,output) pair.
 
     The tokenizer will be called using __call__, and must support the return_tensors="pt" argument.
@@ -55,7 +54,7 @@ def get_evaluator_for_classification_model(
             perf = 1.0 if true_label == pred else 0.0
         elif metric == "correct_prob":
             correct_id = labels.index(true_label)
-            perf = torch.softmax(pred_logits, dim=-1)[correct_id]
+            perf = torch.softmax(pred_logits, dim=-1)[correct_id].item()
         if VERBOSE >= 4:
             print(f"inp={inp} true_label={true_label} pred={pred} perf={perf}")
         return perf

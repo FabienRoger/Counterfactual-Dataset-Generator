@@ -7,9 +7,9 @@ from countergen.augmentation import AugmentedDataset, Dataset, SimpleAugmenter
 from countergen.augmentation.simple_augmenter import default_converter_paths
 from countergen.evaluation import (
     evaluate_and_print,
-    get_evaluator_for_classification_model,
-    get_evaluator_for_classification_pipline,
-    get_evaluator_for_generative_model,
+    get_classification_model_evaluator,
+    get_classification_pipline_evaluator,
+    get_generative_model_evaluator,
 )
 from countergen.evaluation.generative_models import pt_to_generative_model
 from countergen.tools.cli_utils import get_argument, overwrite_fire_help_text
@@ -101,7 +101,7 @@ def evaluate(
 
         device = get_device()
         model: torch.nn.Module = GPT2LMHeadModel.from_pretrained(model_name).to(device)
-        model_ev = get_evaluator_for_generative_model(pt_to_generative_model(model), "probability")
+        model_ev = get_generative_model_evaluator(pt_to_generative_model(model), "probability")
     elif hf_classifier_pipeline is not None:
         pipeline_name = get_argument(hf_classifier_pipeline, default="cardiffnlp/twitter-roberta-base-sentiment-latest")
         if pipeline_name is None:
@@ -113,7 +113,7 @@ def evaluate(
 
         transformers.logging.set_verbosity_error()
         sentiment_task_pipeline = pipeline("sentiment-analysis", model=pipeline_name, tokenizer=pipeline_name)
-        model_ev = get_evaluator_for_classification_pipline(sentiment_task_pipeline)
+        model_ev = get_classification_pipline_evaluator(sentiment_task_pipeline)
     elif hf_classifier_model is not None:
         if labels is None:
             print("Please provide labels (see --help to know how to use the --labels flag)")
@@ -128,7 +128,7 @@ def evaluate(
 
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForSequenceClassification.from_pretrained(model_name)
-        model_ev = get_evaluator_for_classification_model(model, tokenizer, labels.split("/"))
+        model_ev = get_classification_model_evaluator(model, tokenizer, labels.split("/"))
     else:
         print("Please provide either hf-gpt-model or hf-classifier-pipeline or hf_classifier_model")
         return

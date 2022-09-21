@@ -5,7 +5,7 @@ import numpy as np
 from attrs import define
 
 from countergen.tools.plot_utils import plot_mutli_bars
-from countergen.types import AugmentedSample, Category, ModelEvaluator, Performance, Results, StatsAggregator
+from countergen.types import AugmentedSample, Category, Performance, Results, StatsAggregator
 from countergen.tools.math_utils import geometric_mean, mean
 
 

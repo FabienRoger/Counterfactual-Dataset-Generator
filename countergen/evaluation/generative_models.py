@@ -66,7 +66,7 @@ def api_to_generative_model(openai_engine: str = "text-ada-001") -> GenerativeMo
     return gen_model
 
 
-def get_evaluator_for_generative_model(model: GenerativeModel, metric: str = "probability") -> ModelEvaluator:
+def get_generative_model_evaluator(model: GenerativeModel, metric: str = "probability") -> ModelEvaluator:
     """Return the ModelEvaluator corresponding to the model & the metric.
 
     Available metrics: probability & perplexity"""

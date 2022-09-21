@@ -19,13 +19,8 @@ Outputs = List[str]  # The different acceptable outputs of the NLP, string label
 
 Performance = float  # usually between zero & one (one is better)
 
-
-class ModelEvaluator(Protocol):
-    """Callable that returns the performance of a model given an input and expected outputs."""
-
-    def __call__(inp: Input, out: Outputs) -> Performance:
-        ...
-
+# Callable that returns the performance of a model given an input and expected outputs.
+ModelEvaluator = Callable[[Input, Outputs], Performance]
 
 Category = str  # The different kinds of data produced by augmenters.
 
