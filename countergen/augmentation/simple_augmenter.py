@@ -11,7 +11,7 @@ from countergen.types import Category, Augmenter, Input
 from countergen.tools.utils import other
 from countergen.config import MODULE_PATH
 
-default_converter_paths: Mapping[str, str] = {
+DEFAULT_CONVERTERS_PATHS: Mapping[str, str] = {
     "gender": f"{MODULE_PATH}/data/converters/gender.json",
     "west_v_asia": f"{MODULE_PATH}/data/converters/west_v_asia.json",
 }
@@ -50,7 +50,7 @@ class SimpleAugmenter(Augmenter):
 
     @classmethod
     def from_default(cls, name: str = "gender"):
-        return SimpleAugmenter.from_json(default_converter_paths[name])
+        return SimpleAugmenter.from_json(DEFAULT_CONVERTERS_PATHS[name])
 
     @classmethod
     def from_json(

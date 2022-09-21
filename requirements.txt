@@ -1,9 +1,7 @@
 attrs>=22
 fire>=0.4
 python-dotenv>=0.21
-torch>=1.11
 tqdm>=4
-transformers>=4
 matplotlib>=3
 openai>=0.23
-torchmetrics>=0.9
+numpy>=1.21

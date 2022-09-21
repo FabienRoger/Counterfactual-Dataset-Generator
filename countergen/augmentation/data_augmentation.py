@@ -12,7 +12,7 @@ from countergen.types import AugmentedSample, Category, Augmenter, Input, Output
 from countergen.tools.utils import all_same, maybe_tqdm
 from countergen.config import MODULE_PATH
 
-default_dataset_paths: Mapping[str, str] = {
+DEFAULT_DS_PATHS: Mapping[str, str] = {
     "doublebind": f"{MODULE_PATH}/data/datasets/doublebind.jsonl",
     "tiny-test": f"{MODULE_PATH}/data/datasets/tiny-test.jsonl",
     "twitter-sentiment": f"{MODULE_PATH}/data/datasets/twitter-sentiment.jsonl",
@@ -68,7 +68,7 @@ class Dataset:
 
     @classmethod
     def from_default(cls, name: str = "doublebind"):
-        return Dataset.from_jsonl(default_dataset_paths[name])
+        return Dataset.from_jsonl(DEFAULT_DS_PATHS[name])
 
     @classmethod
     def from_jsonl(cls, path: str):

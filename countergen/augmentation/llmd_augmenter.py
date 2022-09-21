@@ -8,7 +8,6 @@ from attrs import define
 from countergen.config import OPENAI_API_KEY
 from countergen.tools.utils import estimate_paraphrase_length
 from countergen.types import Augmenter, Category, Input
-from transformers import GPT2Tokenizer
 
 openai.api_key = OPENAI_API_KEY
 

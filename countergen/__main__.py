@@ -1,19 +1,15 @@
 from typing import List, Optional, Union
 
 import fire  # type: ignore
-import torch
 
 from countergen.augmentation import AugmentedDataset, Dataset, SimpleAugmenter
-from countergen.augmentation.simple_augmenter import default_converter_paths
+from countergen.augmentation.simple_augmenter import DEFAULT_CONVERTERS_PATHS
 from countergen.evaluation import (
     evaluate_and_print,
-    get_classification_model_evaluator,
-    get_classification_pipline_evaluator,
     get_generative_model_evaluator,
 )
-from countergen.evaluation.generative_models import api_to_generative_model, pt_to_generative_model
-from countergen.tools.cli_utils import get_argument, overwrite_fire_help_text
-from countergen.tools.utils import get_device
+from countergen.evaluation.generative_models import api_to_generative_model
+from countergen.tools.cli_utils import overwrite_fire_help_text
 from countergen.types import Augmenter
 
 
@@ -43,7 +39,7 @@ def augment(load_path: str, save_path: str, *augmenters_desc: str):
     for c_str in augmenters_desc:
         if c_str.endswith(".json"):
             augmenter = SimpleAugmenter.from_json(c_str)
-        elif c_str in default_converter_paths:
+        elif c_str in DEFAULT_CONVERTERS_PATHS:
             augmenter = SimpleAugmenter.from_default(c_str)
         else:
             print(f"{c_str} is not a valid augmenter name.")
