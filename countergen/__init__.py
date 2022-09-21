@@ -6,3 +6,4 @@ from countergen.evaluation import aggregators
 from countergen.evaluation.evaluation import evaluate, evaluate_and_print, evaluate_and_save
 from countergen.evaluation.generative_models import api_to_generative_model, get_generative_model_evaluator
 import countergen.types
+from countergen.__main__ import run
