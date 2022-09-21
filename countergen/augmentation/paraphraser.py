@@ -4,8 +4,7 @@ import openai
 from attrs import define
 from countergen.config import OPENAI_API_KEY
 from countergen.tools.utils import estimate_paraphrase_length
-from countergen.types import Augmenter, Category, Input
-from transformers import GPT2Tokenizer
+from countergen.types import Augmenter, Category, Input, Paraphraser
 
 openai.api_key = OPENAI_API_KEY
 
@@ -29,15 +28,11 @@ Paraphrase: {"""
 
 
 @define
-class Paraphraser(Augmenter):
+class LlmParaphraser(Paraphraser):
     prompt_template: str = DEFAULT_TEMPLATE
     engine: str = "text-davinci-002"
 
-    @property
-    def categories(self) -> Tuple[Category, ...]:
-        return ()
-
-    def transform(self, inp: Input, to: Category) -> Input:
+    def transform(self, inp: Input, to: Category = "") -> Input:
         prompt = self.prompt_template.replace("__input__", inp)
 
         completion = openai.Completion.create(
