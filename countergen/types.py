@@ -11,7 +11,6 @@ from typing import (
     TypeVar,
     List,
     Tuple,
-    Protocol,
 )
 
 Input = str  # The input to an NLP mode
