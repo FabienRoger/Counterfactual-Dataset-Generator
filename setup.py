@@ -1,5 +1,5 @@
 import pathlib
-from setuptools import setup
+from setuptools import setup, find_packages
 
 """
 To upload the package, run
@@ -20,7 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     author="SaferAI",
     author_email="saferai.audit@gmail.com",
-    packages=["countergen"],
+    packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",

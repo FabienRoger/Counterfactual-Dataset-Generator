@@ -6,7 +6,7 @@ To install, run
 
 ```console
 pip install countergen
-python -m spacy download en
+python -m spacy download en_core_web_sm
 ```
 
 To see the available commands, run
