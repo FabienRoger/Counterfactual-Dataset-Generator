@@ -21,7 +21,7 @@ DEFAULT_DS_PATHS: Mapping[str, str] = {
 }
 
 DEFAULT_AUGMENTED_DS_PATHS: Mapping[str, str] = {
-    "doublebind-heilman": f"{MODULE_PATH}/data/augdatasets/doublebind-heilman.jsonl",
+    "doublebind-heilman-paraphrased": f"{MODULE_PATH}/data/augdatasets/doublebind-heilman-paraphrased.jsonl",
     "doublebind": f"{MODULE_PATH}/data/augdatasets/doublebind.jsonl",
     "tiny-test-aug-gender": f"{MODULE_PATH}/data/augdatasets/tiny-test.jsonl",
     "twitter-sentiment-aug-gender": f"{MODULE_PATH}/data/augdatasets/twitter-sentiment.jsonl",
