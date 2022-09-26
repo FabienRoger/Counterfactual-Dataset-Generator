@@ -13,9 +13,19 @@ from countergen.tools.utils import all_same, maybe_tqdm
 from countergen.config import MODULE_PATH
 
 DEFAULT_DS_PATHS: Mapping[str, str] = {
+    "doublebind-heilman": f"{MODULE_PATH}/data/datasets/doublebind-heilman.jsonl",
     "doublebind": f"{MODULE_PATH}/data/datasets/doublebind.jsonl",
     "tiny-test": f"{MODULE_PATH}/data/datasets/tiny-test.jsonl",
     "twitter-sentiment": f"{MODULE_PATH}/data/datasets/twitter-sentiment.jsonl",
+    "hate": f"{MODULE_PATH}/data/datasets/hate-test.jsonl",
+}
+
+DEFAULT_AUGMENTED_DS_PATHS: Mapping[str, str] = {
+    "doublebind-heilman": f"{MODULE_PATH}/data/augdatasets/doublebind-heilman.jsonl",
+    "doublebind": f"{MODULE_PATH}/data/augdatasets/doublebind.jsonl",
+    "tiny-test-aug-gender": f"{MODULE_PATH}/data/augdatasets/tiny-test.jsonl",
+    "twitter-sentiment-aug-gender": f"{MODULE_PATH}/data/augdatasets/twitter-sentiment.jsonl",
+    "hate-aug-muslim": f"{MODULE_PATH}/data/augdatasets/hate-test-muslims.jsonl",
 }
 
 
@@ -68,6 +78,10 @@ class Dataset:
 
     @classmethod
     def from_default(cls, name: str = "doublebind"):
+        if name not in DEFAULT_DS_PATHS:
+            raise ValueError(
+                f"""Default name '{name}' is not a default dataset. Choose one in {list(DEFAULT_DS_PATHS.keys())}"""
+            )
         return Dataset.from_jsonl(DEFAULT_DS_PATHS[name])
 
     @classmethod
@@ -87,11 +101,13 @@ class Dataset:
 class AugmentedDataset:
     samples: List[SampleWithVariations]
 
-    def save_to_jsonl(self, path: str):
-        with Path(path).open("w", encoding="utf-8") as f:
-            for sample in self.samples:
-                json.dump(sample.to_json_dict(), f)
-                f.write("\n")
+    @classmethod
+    def from_default(cls, name: str = "doublebind-heilman"):
+        if name not in DEFAULT_DS_PATHS:
+            raise ValueError(
+                f"Default name '{name}' is not a default augmented dataset. Choose one in {list(DEFAULT_AUGMENTED_DS_PATHS.keys())}"
+            )
+        return Dataset.from_jsonl(DEFAULT_AUGMENTED_DS_PATHS[name])
 
     @classmethod
     def from_jsonl(cls, path: str):
@@ -101,6 +117,12 @@ class AugmentedDataset:
             for d in data:
                 samples.append(SampleWithVariations.from_json_dict(d))
         return AugmentedDataset(samples)
+
+    def save_to_jsonl(self, path: str):
+        with Path(path).open("w", encoding="utf-8") as f:
+            for sample in self.samples:
+                json.dump(sample.to_json_dict(), f)
+                f.write("\n")
 
 
 def generate_variations(variation: Variation, augmenter: Augmenter) -> List[Variation]:

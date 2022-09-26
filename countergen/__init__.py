@@ -1,4 +1,9 @@
-from countergen.augmentation.data_augmentation import AugmentedDataset, Dataset, DEFAULT_DS_PATHS
+from countergen.augmentation.data_augmentation import (
+    AugmentedDataset,
+    Dataset,
+    DEFAULT_DS_PATHS,
+    DEFAULT_AUGMENTED_DS_PATHS,
+)
 from countergen.augmentation.llmd_augmenter import LlmdAugmenter
 from countergen.augmentation.paraphraser import LlmParaphraser
 from countergen.augmentation.simple_augmenter import SimpleAugmenter, DEFAULT_CONVERTERS_PATHS
