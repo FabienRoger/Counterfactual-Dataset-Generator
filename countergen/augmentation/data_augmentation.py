@@ -103,7 +103,7 @@ class AugmentedDataset:
 
     @classmethod
     def from_default(cls, name: str = "doublebind-heilman"):
-        if name not in DEFAULT_DS_PATHS:
+        if name not in DEFAULT_AUGMENTED_DS_PATHS:
             raise ValueError(
                 f"Default name '{name}' is not a default augmented dataset. Choose one in {list(DEFAULT_AUGMENTED_DS_PATHS.keys())}"
             )
