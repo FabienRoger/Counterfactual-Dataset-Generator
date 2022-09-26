@@ -107,7 +107,7 @@ class AugmentedDataset:
             raise ValueError(
                 f"Default name '{name}' is not a default augmented dataset. Choose one in {list(DEFAULT_AUGMENTED_DS_PATHS.keys())}"
             )
-        return Dataset.from_jsonl(DEFAULT_AUGMENTED_DS_PATHS[name])
+        return AugmentedDataset.from_jsonl(DEFAULT_AUGMENTED_DS_PATHS[name])
 
     @classmethod
     def from_jsonl(cls, path: str):
